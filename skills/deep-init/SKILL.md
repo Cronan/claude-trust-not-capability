@@ -66,7 +66,7 @@ Check four sources in two phases (see Execution approach above). Cover the last 
 
 Git is the reconnaissance source. Commit messages rarely contain domain rules directly, but the commit history reveals where the team has been correcting mistakes and which tickets drove the work. This subagent identifies targets for the other three subagents, not findings for the CLAUDE.md.
 
-Read the git log for the configured time window. Extract three things:
+Read the git log. Extract three things:
 
 **Hot files.** Count which files appear in commits whose messages contain "fix", "revert", "correct", "wrong", "should be", "actually", "oops", "broken", or "bug". Rank files by frequency. The top 10 are recurring problem areas. These become priority search targets for the PR and issue tracker subagents.
 
