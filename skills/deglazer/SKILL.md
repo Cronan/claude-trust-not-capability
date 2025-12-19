@@ -199,6 +199,92 @@ These patterns are caught by attentive human readers. They are the difference be
 > Remote work pushed cloud adoption forward. Gartner's 2024 survey found that 78% of enterprises increased cloud spending between 2020 and 2023 — though the pandemic probably did more to drive that than any strategic decision.
 
 -----
+
+# POLISH
+
+These patterns are individually low-risk but collectively contribute to the "AI smell" of a text. Fix them after the higher tiers are clean. Be light-handed here — overcorrecting polish items makes the text feel scrubbed rather than written.
+
+## 12. Promotional language
+
+**Words to cut or replace:** groundbreaking, revolutionary, game-changing, cutting-edge, state-of-the-art, world-class, best-in-class, unparalleled, unprecedented, transformative, innovative (when not describing a specific innovation), stunning, breathtaking, renowned, must-see/must-read, nestled, in the heart of, boasts a, vibrant (abstract), rich (figurative), profound
+
+If the thing being described is genuinely remarkable, show why with evidence. Do not assert remarkableness with adjectives.
+
+-----
+
+## 13. Formulaic section headers
+
+**Headers to watch:** "The broader point," "What this means for X," "Looking ahead," "The real question," "Why this matters," "The bottom line," "Implications for X," "Key takeaways," "What's next," "The path forward"
+
+These describe structural role rather than content. They signal template-driven organization. Replace with headers that preview the argument, or drop the header if the section flows without one.
+
+-----
+
+## 14. Weak transitions and conjunctive phrases
+
+**At sentence start:** Furthermore, Moreover, In addition, Consequently, Thus, Hence, Therefore, Indeed, As such, That said, That being said, With that in mind
+
+In well-structured writing, the connection between sentences is implicit. If you need an explicit transition, use "and," "but," or "so." Delete the others and check whether the paragraph still reads clearly. It usually does.
+
+-----
+
+## 15. Bureaucratic bloat
+
+Replace wordy constructions with their plain equivalents:
+
+- "in order to" — "to"
+- "due to the fact that" — "because"
+- "in the event that" — "if"
+- "prior to" — "before"
+- "subsequent to" — "after"
+- "at this point in time" — "now"
+- "has the potential to" — "could"
+- "is able to" — "can"
+- "make use of" — "use"
+- "with respect to" / "in terms of" — cut or rephrase
+- "it is important to note that" — cut; just state the thing
+- "it should be noted that" — cut
+
+-----
+
+## 16. Intensifiers and adverb frontloading
+
+**Intensifiers to cut:** very, really, extremely, incredibly, deeply, highly, particularly, absolutely, definitely, truly, remarkably, exceptionally
+
+**Sentence-opening adverbs to cut:** Interestingly, Importantly, Notably, Significantly, Crucially, Ultimately, Essentially, Fundamentally, Remarkably
+
+Delete the word and check whether the sentence loses meaning. It almost never does. If it does, the intensifier was doing the work that the rest of the sentence should have been doing — rewrite the sentence.
+
+-----
+
+## 17. Formatting tells
+
+- **Em dashes:** AI text overuses them. Replace some with commas, parentheses, or separate sentences. Keep a few — humans use them too, just less uniformly.
+- **Excessive boldface:** Remove mechanical emphasis. Bold every third phrase and you have created a pattern.
+- **Title Case In Every Heading:** Use sentence case unless house style requires otherwise.
+- **Curly quotes in plain-text contexts:** Replace with straight quotes where the medium expects them.
+
+-----
+
+## 18. Communication artifacts
+
+**Phrases to remove entirely:** I hope this helps, Of course!, Certainly!, Would you like me to, Let me know if, Here is a, Feel free to, Happy to help, Don't hesitate to, I'd be happy to
+
+These are chatbot residue. If any survive into published text, remove them without replacement.
+
+-----
+
+## 19. Hedging and sycophantic language
+
+**Sycophancy to cut:** Great question, You're absolutely right, That's an excellent point, What a thoughtful observation
+
+**Excessive hedging to cut:** It could potentially possibly, It might be argued that, One could suggest that, There is a case to be made that
+
+**Generic conclusions to cut:** The future looks bright, Exciting times ahead, Watch this space, Only time will tell, The possibilities are endless
+
+State the thing directly. If you are uncertain, say "I'm not sure" rather than burying the uncertainty in hedge words.
+
+-----
 # PROCESS
 
 ## For a single text
