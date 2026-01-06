@@ -285,6 +285,130 @@ These are chatbot residue. If any survive into published text, remove them witho
 State the thing directly. If you are uncertain, say "I'm not sure" rather than burying the uncertainty in hedge words.
 
 -----
+
+# CORPUS-LEVEL PATTERNS
+
+These patterns only appear when multiple texts by the same "author" are compared. They are the hardest for models to avoid because they emerge from the generation process itself: each text is produced independently from a similar distribution, so the outputs converge in ways a single human author's work would not.
+
+These checks apply when editing a collection. Run them before editing individual pieces.
+
+## 20. Cross-text verbatim repetition
+
+**Problem:** LLMs converge on the same phrasing for similar ideas. If two texts by the same author share a near-identical sentence or clause, one was likely generated from a similar prompt rather than written independently. A human author recycling their own phrase is possible, but more than one or two instances across a collection is a strong signal.
+
+**Diagnostic:** Grep for sentence fragments across all files in the collection. Any clause of eight or more words appearing in more than one file is suspect.
+
+**Before (piece A, on team structure):**
+
+> The teams that succeed aren't the ones with the best tools. They're the ones that have built the trust to use those tools without permission bottlenecks.
+
+**Before (piece B, on deployment):**
+
+> The teams that succeed at continuous deployment aren't the ones with the best pipelines. They're the ones that have built the trust to push code without gates.
+
+**Fix:** Keep whichever instance fits its piece better. Rewrite the other completely — different angle, different sentence structure, different vocabulary. The underlying point (that trust matters more than tools) can appear in both, but the words must diverge.
+
+-----
+
+## 21. Structural homogeneity
+
+**Problem:** Every piece follows the same rhetorical arc: contextualizing opening, balanced middle, implications closing. A human writing on related topics over months would vary the shape. One piece opens with a story, another with data, another with a blunt claim. One ends on uncertainty, another on a concrete recommendation, another mid-thought. If every piece in a collection could swap its introduction and conclusion, the structure is too uniform.
+
+**Diagnostic questions:**
+
+- Do all pieces open with the same move (context-setting, definition, broad claim)?
+- Do all pieces have the same number and rhythm of sections?
+- Do all pieces close with the same move (implications, call to action, summary)?
+- Could you shuffle the final paragraphs between pieces without noticing?
+
+**Fix:** Vary deliberately. If the last three pieces opened with observation, open the next with data, a question, or a specific incident. If they all end with implications, try ending one on an unanswered question or an admission that you do not know what comes next.
+
+-----
+
+## 22. Convergent framing devices
+
+**Problem:** The same rhetorical device appearing at the same structural position across multiple pieces. A favorite construction reused in every conclusion, or the same sentence shape introducing every section. Humans have verbal habits too, but they are idiosyncratic and irregular. LLMs converge on the same "good" constructions because those constructions scored well in training.
+
+**Before (across three piece conclusions):**
+
+> The question isn't whether we adopt AI tooling. It's whether our infrastructure can absorb the failures.
+> The question isn't how much we automate. It's whether we've earned the right to automate it.
+> The question isn't which framework to choose. It's whether the team trusts each other enough to iterate.
+
+**Fix:** Keep the strongest instance. Rewrite the others using a different closing move: a concrete next step, a callback to the opening, a question left deliberately open, or a flat declarative statement with no rhetorical flourish.
+
+-----
+
+## 23. Motif overuse
+
+**Problem:** A specific image, metaphor, or concrete detail that appears once is an anecdote. Twice is a callback. Four times across a collection is a verbal tic that betrays per-prompt generation. LLMs have a limited pool of "vivid-sounding" phrases and reach for the same ones across independent prompts.
+
+**Diagnostic:** Grep for recurring concrete images, metaphors, and specific details across all files. Flag anything that appears more than twice.
+
+**Fix:** Keep the instance where the detail is most thematically earned — where it does real work in the argument. Replace the others with different concrete details. A human writer draws from a lifetime of specific memories; variety in concrete detail is one of the strongest signals of genuine authorship.
+
+-----
+
+# VOICE AND PERSONALITY
+
+Stripping AI patterns is half the work. The other half is ensuring the result reads as though a particular human wrote it. Voiceless text — clean but sterile — is as obvious as slop to an attentive reader. These are not pattern-removal rules. They are generative: they ask you to add what is missing.
+
+## 24. Emotional flatness
+
+**Diagnostic:** Does the writer react to their own material? Is there surprise, frustration, amusement, ambivalence, or discomfort anywhere in the piece? Text that reports without ever reacting reads as generated. A human writing about a failed project is annoyed or reflective. A human writing about a technical breakthrough is excited or skeptical. Flat affect across every topic is a tell.
+
+**Before:**
+
+> The team completed the migration ahead of schedule. The new system performed well in load testing. Several edge cases were identified during the rollout, which the team addressed promptly.
+
+**After:**
+
+> We finished the migration two weeks early, which never happens. Load testing went well — suspiciously well, honestly. Sure enough, three edge cases showed up the first week in production, but they were the kind of thing you can fix over lunch rather than the kind that wake you up at 3am. I'll take it.
+
+-----
+
+## 25. Opinion absence
+
+**Diagnostic:** Does the text have a point of view, or does it present every side with equal weight and leave the conclusion to the reader? Humans have opinions. Even cautious, measured writers lean somewhere. If a text discusses trade-offs without ever saying which side the author favors, it reads as generated.
+
+**Before:**
+
+> There are several approaches to handling database migrations. Some teams prefer automated tools, while others favor manual scripts. Each approach has its own advantages and disadvantages that should be carefully weighed.
+
+**After:**
+
+> Use automated migration tools. Manual scripts are theoretically more controllable, but in practice they bit-rot within months and nobody wants to maintain them. I've seen three teams try the manual approach and all three switched to automated tooling within a year.
+
+-----
+
+## 26. Absence of specific detail
+
+**Diagnostic:** Are the examples generic or anchored in specifics? "A team I worked with" versus "the four of us at the tail end of that November sprint." "A large-scale system" versus "the payment processing pipeline that handled Black Friday traffic." Generic examples could have been generated from any prompt. Specific details — the kind that are too particular to be fabricated efficiently — are the strongest humanizing signal available.
+
+**Before:**
+
+> In one notable instance, a company experienced significant downtime due to a configuration error. The team worked quickly to resolve the issue and implemented measures to prevent recurrence.
+
+**After:**
+
+> Last October, someone pushed a Terraform change that deleted the production load balancer. The site was down for 47 minutes. We fixed it by restoring from the state file, then spent the next two days writing a pre-apply check that diffs against the running infrastructure. It has caught three similar mistakes since.
+
+-----
+
+## 27. Temporal flattening
+
+**Diagnostic:** Does the text exist in a specific time, or does it float in a vague present? Human writing is anchored: "when we started this in 2022," "by the time the third sprint ended," "I remember the week before the launch." AI text uses the continuous present — "teams are increasingly adopting" — which avoids committing to any moment. Temporal specificity is hard for models to fabricate convincingly and easy for humans to provide.
+
+**Before:**
+
+> Organizations are increasingly recognizing the value of investing in developer experience. Teams that prioritize developer tooling tend to see improvements in productivity and retention.
+
+**After:**
+
+> We started investing in developer experience in mid-2023, after two senior engineers quit in the same month and both mentioned tooling frustration in their exit interviews. Within six months, the internal developer satisfaction survey went from 3.1 to 4.2 out of 5. That was enough to justify the headcount.
+
+-----
+
 # PROCESS
 
 ## For a single text
