@@ -10,6 +10,12 @@ Claude Code's `/init` produces a CLAUDE.md by reading the code. That is necessar
 
 Full specification: [skills/deep-init/SKILL.md](skills/deep-init/SKILL.md)
 
+### `/deglazer` — remove AI writing patterns from text
+
+A writing editor skill that identifies and corrects signs of AI-generated text. Covers surface patterns (vocabulary, structure, formatting), deep patterns (epistemic uniformity, register lock, causal over-assertion), and corpus-level patterns (cross-text repetition, structural homogeneity). Organized by detection severity into three tiers.
+
+Full specification: [skills/deglazer/SKILL.md](skills/deglazer/SKILL.md)
+
 ## Quick start
 
 Copy any skill directory into your repo's `.claude/skills/` directory and invoke it by name in Claude Code.
