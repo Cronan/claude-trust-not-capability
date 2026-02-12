@@ -16,6 +16,18 @@ The tone is "quiet authority": competent, clear, unpretentious. Write as if addr
 
 Content is published at the repo root, not inside `.claude/`. The `.claude/` directory is the consumer's directory — when someone copies `skills/deep-init/` into their repo, it goes into their `.claude/skills/`. This repo publishes content; it does not consume it. This follows the same pattern as `anthropics/skills`.
 
+## Where new content goes
+
+| New content | Location |
+|---|---|
+| New skill (e.g. `/add-correction`) | `skills/add-correction/SKILL.md` |
+| Separated subagent prompts (when adapters are needed) | `agents/github-pr-mining.md` (new directory) |
+| Hook scripts | `hooks/pre-commit.sh` (new directory) |
+| Starter CLAUDE.md template | `templates/starter-claudemd.md` (new directory) |
+| Companion article (if hosted in-repo) | `docs/designing-a-prompt-like-a-system.md` (new directory) |
+
+Each addition is a new file in an existing directory, or a new directory at the root level with an obvious name. No existing files need to move.
+
 ## Maintaining the audit prompt
 
 The SKILL.md is a single self-contained specification. Subagent instructions are inline sections, not separate files.
