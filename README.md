@@ -1,8 +1,34 @@
 # Trust, Not Capability
 
-Claude Code's `/init` command produces a CLAUDE.md by reading the code. That is necessary but insufficient. The team's real knowledge — domain rules, edge cases, the mistakes that cost money — lives in PR comments, issue tracker tickets, and commit history. This repo provides a prompt system that mines those sources and produces a CLAUDE.md grounded in what the team actually learned.
+This repo publishes Claude Code skills as prompt specifications. The core skill audits repository history and produces a CLAUDE.md grounded in what the team actually learned, not just what the code looks like today.
 
-## Before and after
+## Skills
+
+### `/deep-init` — audit repo history and rebuild CLAUDE.md
+
+Claude Code's `/init` produces a CLAUDE.md by reading the code. That is necessary but insufficient. The team's real knowledge — domain rules, edge cases, the mistakes that cost money — lives in PR comments, issue tracker tickets, and commit history. `/deep-init` mines those sources and produces a CLAUDE.md grounded in what the team actually learned.
+
+Full specification: [skills/deep-init/SKILL.md](skills/deep-init/SKILL.md)
+
+### `/humaniser` — remove AI writing patterns from text
+
+A writing editor skill that identifies and corrects signs of AI-generated text. Covers surface patterns (vocabulary, structure, formatting), deep patterns (epistemic uniformity, register lock, causal over-assertion), and corpus-level patterns (cross-text repetition, structural homogeneity). Organised by detection severity into three tiers.
+
+Full specification: [skills/humaniser/SKILL.md](skills/humaniser/SKILL.md)
+
+## Quick start
+
+Copy any skill directory into your repo's `.claude/skills/` directory and invoke it by name in Claude Code.
+
+```
+cp -r skills/deep-init/ your-repo/.claude/skills/deep-init/
+```
+
+For `/deep-init`: your repo needs an existing CLAUDE.md from `/init`. The audit builds on `/init` output (build commands, project structure), not replaces it. It reads but does not write — it outputs the proposed CLAUDE.md for human review.
+
+## `/deep-init` in detail
+
+### Before and after
 
 <details>
 <summary><strong>/init output</strong> (generic, code-derived)</summary>
@@ -70,19 +96,7 @@ For business term definitions, see docs/claude/domain-glossary.md.
 
 Full examples in [examples/](examples/).
 
-## Quick start
-
-```
-1. Copy skills/deep-init/ into your repo's .claude/skills/ directory
-2. Run /deep-init in Claude Code
-3. Review the output before committing
-```
-
-The audit reads but does not write. It outputs the proposed CLAUDE.md for human review.
-
-**Prerequisite:** Your repo needs an existing CLAUDE.md from `/init`. The audit builds on `/init` output (build commands, project structure), not replaces it.
-
-## What the audit does
+### What the audit does
 
 The audit mines four sources in two phases:
 
@@ -96,9 +110,7 @@ The audit mines four sources in two phases:
 
 **Synthesis.** The orchestrating agent cross-references findings by ticket ID, clusters duplicates, assigns scope from git data, applies a rule test (does this reveal something Claude cannot discover from the code?), and writes concise instructions.
 
-Full specification: [skills/deep-init/SKILL.md](skills/deep-init/SKILL.md)
-
-## Adapting for your stack
+### Adapting for your stack
 
 The audit uses generic terms — pull requests, issue tracker, team wiki — rather than naming specific tools. The three domain extraction subagents each have their own heading in the SKILL.md, making them straightforward to adjust.
 
@@ -111,7 +123,7 @@ The interface each subagent must satisfy:
 
 The orchestration logic (Phase 1, synthesis, CLAUDE.md generation) is source-agnostic.
 
-## Limitations
+### Limitations
 
 - The subagents are prompts running inside Claude Code, not standalone scripts or packaged tools.
 - Quality depends on the target repo's review culture. Repos with sparse PR comments produce sparse results.
