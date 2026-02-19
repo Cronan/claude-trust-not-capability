@@ -115,7 +115,7 @@ Output: a list of candidate findings, each with:
 - **What the source says**: the reviewer's statement, paraphrased or quoted. Preserve the domain language. Do not attempt to rewrite it as a CLAUDE.md instruction; Opus will do that in Step 3.
 - **Source**: PR number and whether the finding came from a comment or description
 - **Files touched**: the files modified in this PR (from the PR diff, not inferred)
-- **ticket ID**: if present in the PR title, description, or comment
+- **Ticket ID**: if present in the PR title, description, or comment
 - **Recurrence**: note if the same reviewer correction appears on more than one PR
 
 ### Issue tracker tickets (Haiku subagent)
@@ -145,7 +145,7 @@ Output: a list of candidate findings, each with:
 
 - **What the source says**: the root cause statement, resolution description, or acceptance criterion. Preserve the domain language. Do not rewrite as a CLAUDE.md instruction; Opus will do that in Step 3.
 - **Source field**: which part of the ticket the finding came from (comment, description, resolution, or acceptance criteria)
-- **ticket ID**
+- **Ticket ID**
 - **Ticket type**: bug, story, or task
 
 ### Team wiki (Haiku subagent)
