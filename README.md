@@ -130,8 +130,6 @@ Suggestions and improvements welcome via [issues](../../issues).
 
 The subagent sections in `skills/deep-init/SKILL.md` are written generically. If you find adjustments that work well for a specific platform, consider submitting a PR.
 
-Style: British English, plain language, no promotional tone.
-
 ## Licence
 
 MIT. See [LICENCE](LICENCE).
