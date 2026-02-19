@@ -72,7 +72,7 @@ Read the git log. Extract three things:
 
 **Revert commits.** List all reverts with the original commit they reversed, the files affected, and any ticket ID. A revert means something was wrong enough to undo. These are high-signal candidates.
 
-**ticket IDs.** Extract every ticket ID from every commit message in the time window. These are lookup keys for the cross-referencing in Step 3.
+**Ticket IDs.** Extract every ticket ID from every commit message in the time window. These are lookup keys for the cross-referencing in Step 3.
 
 Practical limit: scan up to 2,000 commits. If the repo has more in the time window, prioritise recent commits and the hot files analysis.
 
@@ -139,7 +139,7 @@ Include bugs, stories, and tasks. Look for:
 
 Ignore: feature requests still open or not yet implemented, and tickets for repos other than this one. For application repos without infrastructure responsibilities, ignore pure infrastructure tickets (server down, deployment failed). For database or infrastructure repos, include deployment and migration tickets as they often encode ordering rules and dependency constraints. For repos without a UI, ignore UI-specific tickets. For repos with a UI (React, Streamlit, or similar), include UI bug tickets as they encode display logic, formatting rules, and user-facing data expectations.
 
-Practical limit: read up to 150 tickets. Prioritise bugs over stories, and stories over tasks. Within each type, prioritise tickets whose ticket IDs also appear in the git subagent's output (these are confirmed as implemented, not just discussed). Process tickets in batches (10-20 at a time), accumulating findings as you go.
+Practical limit: read up to 150 tickets. Prioritise bugs over stories, and stories over tasks. Within each type, prioritise tickets whose IDs also appear in the git subagent's output (these are confirmed as implemented, not just discussed). Process tickets in batches (10-20 at a time), accumulating findings as you go.
 
 Output: a list of candidate findings, each with:
 
@@ -353,7 +353,7 @@ Generate these only if the audit surfaces enough material to justify them. Don't
 
 **docs/claude/domain-glossary.md**: Business terms used in this repo and what they mean in code. Drawn from issue tracker tickets and PR comments where reviewers explained domain concepts. Format: "Term: definition. In code, this maps to [class/module/field]."
 
-**docs/claude/edge-cases.md**: Specific scenarios with expected behaviour. Drawn from bug tickets. Format: "When [situation], the correct behaviour is [X]. Do not [Y]. (Established in [JIRA-ID].)"
+**docs/claude/edge-cases.md**: Specific scenarios with expected behaviour. Drawn from bug tickets. Format: "When [situation], the correct behaviour is [X]. Do not [Y]. (Established in [TICKET-ID].)"
 
 ## Step 5: Output
 
