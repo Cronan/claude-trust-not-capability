@@ -4,8 +4,6 @@ Claude Code's `/init` command produces a CLAUDE.md by reading the code. That is 
 
 ## Before and after
 
-<!-- TODO: Replace with real sanitised examples -->
-
 <details>
 <summary><strong>/init output</strong> (generic, code-derived)</summary>
 
@@ -125,8 +123,6 @@ The orchestration logic (Phase 1, synthesis, CLAUDE.md generation) is source-agn
 This repo is the concrete artifact of a broader project connecting classical software engineering literature to frontier AI lab practices. The series covers Brooks (*The Mythical Man-Month*), Conway's Law, Deming's PDSA cycle, and DORA/Accelerate — applied to the question of how teams should work with AI coding agents.
 
 The thesis: AI is a force multiplier only if systems are designed to absorb mistakes cheaply. CLAUDE.md is Deming's PDSA cycle in a markdown file. Every mistake the team catches becomes a rule. The audit command produces the initial rules; the `#` key maintains them over time.
-
-<!-- TODO: Add links to companion article and Substack series when published -->
 
 ## Contributing
 
