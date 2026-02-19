@@ -2,10 +2,8 @@
 
 This is a sanitised example of what `/init` produces for a typical Python repository. The output is accurate but generic — it describes what the code does, not what the team knows.
 
-<!-- TODO: Replace with real sanitised example from a production repo -->
-
 ```markdown
-# nav-calculator
+# order-engine
 
 ## Build and test
 
@@ -20,19 +18,19 @@ Type checking with mypy:
 
 ## Project structure
 
-- src/nav/ — Core NAV calculation modules
-- src/data/ — Data loading and transformation pipelines
-- src/pricing/ — Price feed integrations
-- src/reporting/ — Report generation
+- src/orders/ — Core order processing modules
+- src/inventory/ — Stock management and warehouse allocation
+- src/pricing/ — Discount and tax calculation
+- src/fulfilment/ — Shipping and dispatch logic
 - tests/ — Test suite organised by module
 - config/ — Configuration files
 
 ## Key files
 
-- src/nav/calculator.py — Main NAV calculation engine
-- src/nav/fx_pricing.py — FX rate lookups and forward pricing
-- src/data/loader.py — Position and trade data loading
-- src/pricing/cache.py — Price caching layer
+- src/orders/processor.py — Main order processing engine
+- src/inventory/reservation.py — Stock reservation and expiry
+- src/inventory/warehouse.py — Warehouse allocation logic
+- src/pricing/discounts.py — Discount application pipeline
 
 ## Coding conventions
 
@@ -44,9 +42,9 @@ Type checking with mypy:
 
 ## Common development tasks
 
-- To add a new asset class, create a new module in src/nav/
-- To modify pricing logic, update the relevant pricing module
+- To add a new payment method, create a new module in src/payments/
+- To modify discount logic, update the relevant pricing module
 - Run the full test suite before submitting PRs
 ```
 
-Note what is absent: no domain rules, no edge cases, no explanation of why FX forwards are different from other asset classes, no mention of the NAV window timing constraint, no warning about settlement date handling. These are the rules that cost money when violated, and `/init` cannot discover them because they live in the team's experience, not in the code structure.
+Note what is absent: no domain rules, no edge cases, no explanation of why stock reservations have a time limit, no mention of the inventory sync window, no warning about pre-order handling. These are the rules that cost money when violated, and `/init` cannot discover them because they live in the team's experience, not in the code structure.

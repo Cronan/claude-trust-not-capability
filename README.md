@@ -1,6 +1,6 @@
 # Trust, Not Capability
 
-Claude Code's `/init` command produces a CLAUDE.md by reading the code. That is necessary but insufficient. The team's real knowledge — domain rules, edge cases, the mistakes that cost money — lives in PR comments, Jira tickets, and commit history. This repo provides a prompt system that mines those sources and produces a CLAUDE.md grounded in what the team actually learned.
+Claude Code's `/init` command produces a CLAUDE.md by reading the code. That is necessary but insufficient. The team's real knowledge — domain rules, edge cases, the mistakes that cost money — lives in PR comments, issue tracker tickets, and commit history. This repo provides a prompt system that mines those sources and produces a CLAUDE.md grounded in what the team actually learned.
 
 ## Before and after
 
@@ -16,8 +16,8 @@ Claude Code's `/init` command produces a CLAUDE.md by reading the code. That is 
 Run `pytest` to execute tests. Run `ruff check` for linting.
 
 ## Project structure
-- src/nav/ — NAV calculation modules
-- src/data/ — Data loading and transformation
+- src/orders/ — Order processing modules
+- src/inventory/ — Stock management and allocation
 - tests/ — Test suite
 
 ## Coding conventions
@@ -34,22 +34,23 @@ Run `pytest` to execute tests. Run `ruff check` for linting.
 # MyRepo
 Last audited: 2026-02-19
 
-Portfolio NAV calculation engine. Errors here produce incorrect fund valuations
-reported to investors and regulators.
+Order processing and fulfilment engine. Errors here produce incorrect charges
+or oversold inventory.
 
 ## Domain rules
 
-FX forwards use T-0 rates from the live feed, not T-1 close prices.
-All other asset classes use T-1.
+Stock reservations expire after 30 minutes if payment is not captured.
+Never extend the window; it causes overselling during flash sales.
 
-Never call the pricing service during the NAV window (16:00-17:30 UTC).
-Use the cached snapshot from `PriceCache.get_nav_snapshot()`.
+Never query the warehouse API during the nightly inventory sync (02:00-03:30 UTC).
+Use the cached snapshot from `InventoryCache.get_snapshot()`.
 
-Hedging overlay calculations run after the base NAV, not before.
-The overlay adjusts the base; reversing the order double-counts hedges.
+Discount application runs after stock validation, not before.
+Applying discounts to out-of-stock items generates refund obligations
+for orders that should have been rejected.
 
-Exclude pending settlements until T+2.
-See `filter_settlements` in src/nav/settlement_filter.py.
+Exclude pre-orders from available stock counts until the goods-in receipt
+is confirmed. See `filter_preorders` in src/inventory/preorder_filter.py.
 
 ## Build and test
 
@@ -59,11 +60,11 @@ Pre-commit hooks enforce ruff and mypy — do not skip them.
 ## Coding patterns
 
 Use Arrow-backed DataFrames (`dtype_backend="pyarrow"`), not the default NumPy backend.
-See `load_positions` in src/data/loader.py for the canonical pattern.
+See `load_orders` in src/data/loader.py for the canonical pattern.
 
 ## References
 
-Before modifying anything in src/nav/, read docs/claude/domain-rules.md.
+Before modifying anything in src/orders/, read docs/claude/domain-rules.md.
 For business term definitions, see docs/claude/domain-glossary.md.
 ```
 
@@ -87,36 +88,37 @@ The audit reads but does not write. It outputs the proposed CLAUDE.md for human 
 
 The audit mines four sources in two phases:
 
-**Phase 1 — Reconnaissance.** A git history subagent scans the log to identify hot files (files with recurring fix commits), revert commits, and Jira IDs. This runs first because its output focuses the other three subagents.
+**Phase 1 — Reconnaissance.** A git history subagent scans the log to identify hot files (files with recurring fix commits), revert commits, and ticket IDs. This runs first because its output focuses the other three subagents.
 
 **Phase 2 — Domain extraction.** Three subagents run in parallel:
 
 - **PR comments**: Extracts domain rules from reviewer feedback on merged PRs, prioritising PRs that touch hot files
-- **Jira tickets**: Reads closed bugs, stories, and tasks for root cause analysis and acceptance criteria with specific domain constraints
-- **Confluence pages**: Searches for ADRs, glossaries, and runbooks (the three page types with signal)
+- **Issue tracker tickets**: Reads closed bugs, stories, and tasks for root cause analysis and acceptance criteria with specific domain constraints
+- **Team wiki pages**: Searches for ADRs, glossaries, and runbooks (the three page types with signal)
 
-**Synthesis.** The orchestrating agent cross-references findings by Jira ID, clusters duplicates, assigns scope from git data, applies a rule test (does this reveal something Claude cannot discover from the code?), and writes concise instructions.
+**Synthesis.** The orchestrating agent cross-references findings by ticket ID, clusters duplicates, assigns scope from git data, applies a rule test (does this reveal something Claude cannot discover from the code?), and writes concise instructions.
 
 Full specification: [skills/deep-init/SKILL.md](skills/deep-init/SKILL.md)
 
 ## Adapting for your stack
 
-The audit currently assumes Bitbucket for PRs, Jira for tickets, and Confluence for documentation. These are clearly demarcated sections within the SKILL.md, each with its own heading.
+The audit uses generic terms — pull requests, issue tracker, team wiki — rather than naming specific tools. The three domain extraction subagents each have their own heading in the SKILL.md, making them straightforward to adjust.
 
-To adapt for GitHub, Linear, Notion, or other tools: fork this repo and modify the relevant subagent section. The interface each section must satisfy:
+Claude Code needs access to your team's tools to run the extraction. This typically means MCP servers or API integrations for your PR platform, issue tracker, and documentation wiki. The git subagent works with any git repository directly.
 
-- **Input**: receives the hot files list and Jira IDs from Phase 1
+The interface each subagent must satisfy:
+
+- **Input**: receives the hot files list and ticket IDs from Phase 1
 - **Output**: candidate findings, each with what the source says, the source reference, files touched, and any ticket IDs
 
 The orchestration logic (Phase 1, synthesis, CLAUDE.md generation) is source-agnostic.
 
 ## Limitations
 
-- Written for Bitbucket, Jira, and Confluence. Adaptable but not out-of-the-box for GitHub, Linear, or Notion.
-- The subagents are prompts running inside Claude Code, not standalone scripts or packaged tools.
+- The subagents are prompts running inside Claude Code, not standalone scripts or packaged tools. Claude Code needs access to your PR platform, issue tracker, and wiki via MCP servers or API integrations.
 - Quality depends on the target repo's review culture. Repos with sparse PR comments produce sparse results.
 - Designed for English-language sources.
-- The audit covers 6 months of commits and PRs, 12 months of Jira tickets. Repos with low activity or key decisions made long ago may need the time windows extended.
+- The audit covers 6 months of commits and PRs, 12 months of issue tracker tickets. Repos with low activity or key decisions made long ago may need the time windows extended.
 
 ## The thinking behind this
 
@@ -130,7 +132,7 @@ The thesis: AI is a force multiplier only if systems are designed to absorb mist
 
 Suggestions and improvements welcome via [issues](../../issues).
 
-To adapt the prompt for different sources (GitHub PRs, Linear tickets, Notion pages), fork the repo and modify the relevant subagent section in `skills/deep-init/SKILL.md`. If you build an adapter that works well, consider submitting a PR.
+The subagent sections in `skills/deep-init/SKILL.md` are written generically. If you find adjustments that work well for a specific platform, consider submitting a PR.
 
 Style: British English, plain language, no promotional tone.
 

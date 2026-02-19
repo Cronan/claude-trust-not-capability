@@ -1,6 +1,6 @@
 ---
 name: deep-init
-description: Audits a repository's git history, PR comments, Jira tickets, and Confluence pages to produce a CLAUDE.md grounded in the team's actual experience. Replaces generic /init output with domain-specific rules extracted from real code review feedback and bug fixes. Use when a repo's CLAUDE.md needs to go beyond what /init can produce.
+description: Audits a repository's git history, PR comments, issue tracker tickets, and team wiki pages to produce a CLAUDE.md grounded in the team's actual experience. Replaces generic /init output with domain-specific rules extracted from real code review feedback and bug fixes. Use when a repo's CLAUDE.md needs to go beyond what /init can produce.
 user-invocable: true
 disable-model-invocation: true
 context: fork
@@ -24,13 +24,13 @@ Run in two phases:
 
 **Phase 1: Reconnaissance (git subagent runs first).**
 
-- Git history subagent (Haiku): scans the git log, outputs hot files, revert commits, and a complete list of Jira IDs found. This runs first because its output feeds the other three subagents.
+- Git history subagent (Haiku): scans the git log, outputs hot files, revert commits, and a complete list of ticket IDs found. This runs first because its output feeds the other three subagents.
 
 **Phase 2: Domain extraction (three subagents run in parallel, using git output).**
 
-- Bitbucket PR subagent (Haiku): reads PR comments and descriptions. Prioritises PRs that touch the hot files identified by git. Outputs raw findings with source references and files touched.
-- Jira subagent (Haiku): reads closed tickets (bugs, stories, tasks), starting with the Jira IDs found by git, then broadening. Outputs raw findings with Jira IDs and source fields.
-- Confluence subagent (Haiku): searches for ADRs, glossaries, and runbooks related to this repo. Outputs findings with page types and staleness flags.
+- PR subagent (Haiku): reads PR comments and descriptions. Prioritises PRs that touch the hot files identified by git. Outputs raw findings with source references and files touched.
+- Issue tracker subagent (Haiku): reads closed tickets (bugs, stories, tasks), starting with the ticket IDs found by git, then broadening. Outputs raw findings with ticket IDs and source fields.
+- Wiki subagent (Haiku): searches for ADRs, glossaries, and runbooks related to this repo. Outputs findings with page types and staleness flags.
 
 The parent agent (Opus) then runs Step 3 (synthesis: merging, deduplication, scope assignment, rule testing, and instruction writing) and Step 4 (generating the CLAUDE.md) using the combined output from all four subagents.
 
@@ -58,31 +58,31 @@ For each section you keep, note whether it belongs in the root CLAUDE.md (needed
 
 ## Step 2: Mine the repo history
 
-Check four sources in two phases (see Execution approach above). Cover the last 6 months for commits and PRs, and 12 months for Jira tickets. If the initial scan returns fewer than 10 findings, extend the window to 12 months for commits and PRs, and 24 months for Jira. Some repos have low commit frequency or had key decisions made long ago.
+Check four sources in two phases (see Execution approach above). Cover the last 6 months for commits and PRs, and 12 months for issue tracker tickets. If the initial scan returns fewer than 10 findings, extend the window to 12 months for commits and PRs, and 24 months for tickets. Some repos have low commit frequency or had key decisions made long ago.
 
 ### Phase 1: Reconnaissance
 
 ### Git commits (Haiku subagent)
 
-Git is the reconnaissance source. Commit messages rarely contain domain rules directly, but the commit history reveals where the team has been correcting mistakes and which Jira tickets drove the work. This subagent identifies targets for the other three subagents, not findings for the CLAUDE.md.
+Git is the reconnaissance source. Commit messages rarely contain domain rules directly, but the commit history reveals where the team has been correcting mistakes and which tickets drove the work. This subagent identifies targets for the other three subagents, not findings for the CLAUDE.md.
 
 Read the git log. Extract three things:
 
-**Hot files.** Count which files appear in commits whose messages contain "fix", "revert", "correct", "wrong", "should be", "actually", "oops", "broken", or "bug". Rank files by frequency. The top 10 are recurring problem areas. These become priority search targets for the PR and Jira subagents.
+**Hot files.** Count which files appear in commits whose messages contain "fix", "revert", "correct", "wrong", "should be", "actually", "oops", "broken", or "bug". Rank files by frequency. The top 10 are recurring problem areas. These become priority search targets for the PR and issue tracker subagents.
 
-**Revert commits.** List all reverts with the original commit they reversed, the files affected, and any Jira ID. A revert means something was wrong enough to undo. These are high-signal candidates.
+**Revert commits.** List all reverts with the original commit they reversed, the files affected, and any ticket ID. A revert means something was wrong enough to undo. These are high-signal candidates.
 
-**Jira IDs.** Extract every Jira ID from every commit message in the time window. These are lookup keys for the cross-referencing in Step 3.
+**ticket IDs.** Extract every ticket ID from every commit message in the time window. These are lookup keys for the cross-referencing in Step 3.
 
 Practical limit: scan up to 2,000 commits. If the repo has more in the time window, prioritise recent commits and the hot files analysis.
 
-Output: (1) a ranked list of hot files with fix-commit counts, (2) a list of revert commits with Jira IDs and files, (3) a complete list of Jira IDs found. Do not attempt to extract domain rules from commit messages. The messages are too terse; the rules will come from PRs and Jira.
+Output: (1) a ranked list of hot files with fix-commit counts, (2) a list of revert commits with ticket IDs and files, (3) a complete list of ticket IDs found. Do not attempt to extract domain rules from commit messages. The messages are too terse; the rules will come from PRs and tickets.
 
 ### Phase 2: Domain extraction
 
-The following three subagents run in parallel, each receiving the hot files list and Jira IDs from Phase 1.
+The following three subagents run in parallel, each receiving the hot files list and ticket IDs from Phase 1.
 
-### Bitbucket PRs (Haiku subagent)
+### Pull requests (Haiku subagent)
 
 PRs are the primary source of domain rules. Reviewer comments are where senior engineers explain business logic in their own words. Prioritise comments over descriptions.
 
@@ -90,10 +90,10 @@ PRs are the primary source of domain rules. Reviewer comments are where senior e
 
 Examples of high-value comments (extract these):
 
-- "We don't use T-1 for FX forwards because they settle on trade date"
-- "This needs to exclude pending settlements until T+2"
-- "Never call [service X] during the NAV window, use the cached snapshot"
-- "The order matters here: hedging overlay runs after the base NAV, not before"
+- "Stock reservations must expire after 30 minutes — extending them causes overselling during high-traffic periods"
+- "This needs to exclude pre-orders until the goods-in receipt is confirmed"
+- "Never call the warehouse API during the inventory sync, use the cached snapshot"
+- "The order matters here: discounts apply after stock validation, not before"
 
 Examples of low-value comments (ignore these):
 
@@ -104,9 +104,9 @@ Examples of low-value comments (ignore these):
 
 For PRs that touch files in the hot file list from the git subagent, read all comments. For other PRs, read only comments that are longer than two sentences (short comments are rarely domain rules).
 
-Extract any Jira IDs from PR titles, descriptions, and comments for cross-referencing in Step 3.
+Extract any ticket IDs from PR titles, descriptions, and comments for cross-referencing in Step 3.
 
-**PR descriptions (supporting value).** Scan descriptions for rationale ("chose X over Y because…"), warnings to reviewers ("be careful with this area because…"), and links to Jira tickets or Confluence pages. Descriptions are usually templated and describe intent. They rarely contain the domain rules themselves, but they point to where the rules are.
+**PR descriptions (supporting value).** Scan descriptions for rationale ("chose X over Y because…"), warnings to reviewers ("be careful with this area because…"), and links to tickets or wiki pages. Descriptions are usually templated and describe intent. They rarely contain the domain rules themselves, but they point to where the rules are.
 
 Practical limit: read the most recent 200 merged PRs. If fewer than 200 exist in the time window, read all of them. Prioritise PRs that touch hot files. Process PRs in batches (10-20 at a time), accumulating findings as you go.
 
@@ -115,20 +115,20 @@ Output: a list of candidate findings, each with:
 - **What the source says**: the reviewer's statement, paraphrased or quoted. Preserve the domain language. Do not attempt to rewrite it as a CLAUDE.md instruction; Opus will do that in Step 3.
 - **Source**: PR number and whether the finding came from a comment or description
 - **Files touched**: the files modified in this PR (from the PR diff, not inferred)
-- **Jira ID**: if present in the PR title, description, or comment
+- **ticket ID**: if present in the PR title, description, or comment
 - **Recurrence**: note if the same reviewer correction appears on more than one PR
 
-### Jira tickets (Haiku subagent)
+### Issue tracker tickets (Haiku subagent)
 
-Jira tickets provide the business context that PR comments and git commits lack: why a change was needed, what the expected behaviour should have been, and the root cause of failures.
+Issue tracker tickets provide the business context that PR comments and git commits lack: why a change was needed, what the expected behaviour should have been, and the root cause of failures.
 
-**Finding relevant tickets.** Search for closed tickets using: (1) the repo name in labels, components, or summary, (2) Jira IDs extracted by the git subagent, and (3) the names of key modules or systems this repo implements. If the team uses a specific Jira component or label for this repo, use that as the primary filter. Try all three approaches; the best one depends on how the team organises Jira.
+**Finding relevant tickets.** Search for closed tickets using: (1) the repo name in labels, components, or summary, (2) ticket IDs extracted by the git subagent, and (3) the names of key modules or systems this repo implements. If the team uses a specific project label or component for this repo, use that as the primary filter. Try all three approaches; the best one depends on how the team organises their tracker.
 
 **What to extract from each ticket.** Read three fields in this priority order:
 
-1. **Comments (highest value).** Root cause analysis lives here. A bug ticket description says "NAV is wrong." The comments say "Root cause: we were using T-1 rates for FX forwards when we should use T-0." The comment contains the domain rule; the description contains only a symptom.
+1. **Comments (highest value).** Root cause analysis lives here. A bug ticket description says "Orders are being oversold." The comments say "Root cause: we were querying live stock levels during the inventory sync window instead of using the cached snapshot." The comment contains the domain rule; the description contains only a symptom.
 1. **Resolution/description together.** The gap between "what went wrong" (description) and "what we did" (resolution) encodes an implicit rule: what should the system have done?
-1. **Acceptance criteria in stories.** Only extract criteria that state specific domain rules. "As a PM, I need accurate NAV calculations" is too vague to be useful. "NAV must use T-0 rates for FX forwards, T-1 for all other asset classes" is a rule. Filter for specificity: does the criterion name a concrete data source, calculation rule, sequencing requirement, or constraint? If not, skip it.
+1. **Acceptance criteria in stories.** Only extract criteria that state specific domain rules. "As a PM, I need accurate stock counts" is too vague to be useful. "Refund amount must use the original purchase price, not the current catalogue price" is a rule. Filter for specificity: does the criterion name a concrete data source, calculation rule, sequencing requirement, or constraint? If not, skip it.
 
 Include bugs, stories, and tasks. Look for:
 
@@ -139,20 +139,20 @@ Include bugs, stories, and tasks. Look for:
 
 Ignore: feature requests still open or not yet implemented, and tickets for repos other than this one. For application repos without infrastructure responsibilities, ignore pure infrastructure tickets (server down, deployment failed). For database or infrastructure repos, include deployment and migration tickets as they often encode ordering rules and dependency constraints. For repos without a UI, ignore UI-specific tickets. For repos with a UI (React, Streamlit, or similar), include UI bug tickets as they encode display logic, formatting rules, and user-facing data expectations.
 
-Practical limit: read up to 150 tickets. Prioritise bugs over stories, and stories over tasks. Within each type, prioritise tickets whose Jira IDs also appear in the git subagent's output (these are confirmed as implemented, not just discussed). Process tickets in batches (10-20 at a time), accumulating findings as you go.
+Practical limit: read up to 150 tickets. Prioritise bugs over stories, and stories over tasks. Within each type, prioritise tickets whose ticket IDs also appear in the git subagent's output (these are confirmed as implemented, not just discussed). Process tickets in batches (10-20 at a time), accumulating findings as you go.
 
 Output: a list of candidate findings, each with:
 
 - **What the source says**: the root cause statement, resolution description, or acceptance criterion. Preserve the domain language. Do not rewrite as a CLAUDE.md instruction; Opus will do that in Step 3.
 - **Source field**: which part of the ticket the finding came from (comment, description, resolution, or acceptance criteria)
-- **Jira ID**
+- **ticket ID**
 - **Ticket type**: bug, story, or task
 
-### Confluence (Haiku subagent)
+### Team wiki (Haiku subagent)
 
-Confluence has a low signal-to-noise ratio. Most pages are stale, high-level, or duplicating what the code already says. Three page types are productive for a CLAUDE.md. Ignore everything else.
+Team wikis have a low signal-to-noise ratio. Most pages are stale, high-level, or duplicating what the code already says. Three page types are productive for a CLAUDE.md. Ignore everything else.
 
-**Finding relevant pages.** Search Confluence using: the repo name, the names of key systems or services this repo connects to, and the business domain it serves (e.g. "NAV calculation", "FX hedging", "mandate reporting"). Run three to five searches with different terms. Limit to the top 10 results per search.
+**Finding relevant pages.** Search the team wiki using: the repo name, the names of key systems or services this repo connects to, and the business domain it serves (e.g. "order fulfilment", "inventory allocation", "returns processing"). Run three to five searches with different terms. Limit to the top 10 results per search.
 
 **Three page types to extract from:**
 
@@ -162,9 +162,9 @@ Confluence has a low signal-to-noise ratio. Most pages are stale, high-level, or
 
 **Ignore** these page types regardless of relevance: meeting notes, sprint retrospectives, generic process documentation, high-level requirements documents that predate implementation (they describe what was intended, not what was built), and onboarding guides that summarise what the code already says.
 
-Confluence content is lower-confidence than the other three sources because pages may be stale. For each finding, note the page's last-modified date. Treat pages not updated in the last 12 months as candidates requiring human confirmation that the content is still accurate.
+Wiki content is lower-confidence than the other three sources because pages may be stale. For each finding, note the page's last-modified date. Treat pages not updated in the last 12 months as candidates requiring human confirmation that the content is still accurate.
 
-Practical limit: read at most 30 pages. Prioritise pages modified within the last 12 months and pages linked from Jira tickets or PR descriptions found by the other subagents. Process pages individually.
+Practical limit: read at most 30 pages. Prioritise pages modified within the last 12 months and pages linked from tickets or PR descriptions found by the other subagents. Process pages individually.
 
 Output: a list of candidate findings, each with:
 
@@ -175,21 +175,21 @@ Output: a list of candidate findings, each with:
 
 ## Step 3: Synthesise findings into candidate rules
 
-The four subagents produce raw findings: statements from PR comments, Jira root causes, Confluence decisions. This step is where those findings become CLAUDE.md entries. This is Opus's job because it requires judgment: distinguishing signal from noise, merging duplicates, assigning scope from git data, and writing concise instructions.
+The four subagents produce raw findings: statements from PR comments, ticket root causes, wiki decisions. This step is where those findings become CLAUDE.md entries. This is Opus's job because it requires judgment: distinguishing signal from noise, merging duplicates, assigning scope from git data, and writing concise instructions.
 
 Work through five substeps in order.
 
-### 3a. Merge findings that share a Jira ID
+### 3a. Merge findings that share a ticket ID
 
-Collect all Jira IDs that appear in more than one subagent's output. For each shared ID, combine the findings into a single enriched finding. The PR comment gives you the rule in the reviewer's words. The Jira ticket gives you the business context and root cause. The git data gives you the files affected. The Confluence page (if any) gives you the design rationale.
+Collect all ticket IDs that appear in more than one subagent's output. For each shared ID, combine the findings into a single enriched finding. The PR comment gives you the rule in the reviewer's words. The ticket gives you the business context and root cause. The git data gives you the files affected. The wiki page (if any) gives you the design rationale.
 
-Where sources conflict, weight code-level sources (PR comments, git, Jira resolution) over Confluence. The code reflects what was actually built; Confluence reflects what was intended, which may differ.
+Where sources conflict, weight code-level sources (PR comments, git, ticket resolution) over wiki pages. The code reflects what was actually built; wiki pages reflect what was intended, which may differ.
 
-### 3b. Cluster findings without Jira IDs
+### 3b. Cluster findings without ticket IDs
 
-Many of the best findings have no Jira link. A senior engineer writing "we don't use T-1 for FX forwards" in a PR comment may never reference a ticket. These findings still need processing.
+Many of the best findings have no ticket link. A senior engineer writing "stock reservations must expire after 30 minutes" in a PR comment may never reference a ticket. These findings still need processing.
 
-Group findings that describe the same underlying rule. Two PR comments on different PRs correcting the same thing are one rule, not two. A Confluence ADR and an unlinked PR comment describing the same design decision are one rule. The test: if two findings would produce the same CLAUDE.md instruction, they're the same rule.
+Group findings that describe the same underlying rule. Two PR comments on different PRs correcting the same thing are one rule, not two. A wiki ADR and an unlinked PR comment describing the same design decision are one rule. The test: if two findings would produce the same CLAUDE.md instruction, they're the same rule.
 
 Merge each cluster into a single finding. Note the number of independent occurrences; recurring corrections are higher confidence than one-off comments.
 
@@ -197,12 +197,12 @@ Merge each cluster into a single finding. Note the number of independent occurre
 
 For each finding, determine which files or modules it applies to. Use these sources in priority order:
 
-1. **Files touched in associated commits or PRs.** This is the most reliable scope. If a finding came from PR #847 and that PR modified src/nav/fx_pricing.py, the scope is src/nav/fx_pricing.py.
+1. **Files touched in associated commits or PRs.** This is the most reliable scope. If a finding came from PR #847 and that PR modified src/inventory/reservation.py, the scope is src/inventory/reservation.py.
 1. **Hot files from the git subagent.** If the finding mentions a module or service name that matches a hot file, that's the scope.
-1. **Module names mentioned in the finding itself.** If a Jira comment says "the NAV calculator uses the wrong rate," and the repo has a src/nav/ directory, the scope is src/nav/.
+1. **Module names mentioned in the finding itself.** If a ticket comment says "the order processor uses the wrong timeout," and the repo has a src/orders/ directory, the scope is src/orders/.
 1. **Repo-wide.** If the rule applies everywhere (e.g. "always use Arrow-backed DataFrames"), the scope is the root file.
 
-Scope determines placement: repo-wide rules go in the root CLAUDE.md. Rules scoped to a specific directory go in a reference file, pointed to by a conditional reference ("Before modifying src/nav/, read docs/claude/domain-rules.md").
+Scope determines placement: repo-wide rules go in the root CLAUDE.md. Rules scoped to a specific directory go in a reference file, pointed to by a conditional reference ("Before modifying src/orders/, read docs/claude/domain-rules.md").
 
 ### 3d. Apply the rule test
 
@@ -232,10 +232,10 @@ For each finding that passes the rule test, write a CLAUDE.md instruction. This 
 Principles for writing instructions:
 
 - One rule per line. If a finding contains two rules, split them.
-- State the rule, not the history. "FX forwards use T-0 rates, not T-1 close prices" not "In PR #847 we fixed the FX rate lookup."
-- Include the contrast when the wrong approach is plausible. "Use T-0 rates, not T-1" is better than "Use T-0 rates" because it tells Claude what to avoid.
+- State the rule, not the history. "Stock reservations expire after 30 minutes, not 60" not "In PR #847 we fixed the reservation timeout."
+- Include the contrast when the wrong approach is plausible. "Reservations expire after 30 minutes, not 60" is better than "Reservations expire after 30 minutes" because it tells Claude what to avoid.
 - Add the "why" only when the rule would otherwise seem wrong. One sentence maximum.
-- Point to the authoritative code when it helps: "See `calculate_nav` in src/nav/calculator.py."
+- Point to the authoritative code when it helps: "See `process_order` in src/orders/processor.py."
 - Use named code elements (functions, classes, modules), not line numbers.
 
 For each instruction, record:
@@ -243,11 +243,11 @@ For each instruction, record:
 - The instruction itself
 - Scope (repo-wide, or specific files/directories)
 - Confidence (number of independent sources, whether it's a recurring correction)
-- Source trail (which PR comments, Jira IDs, or Confluence pages it came from, for the human reviewer)
+- Source trail (which PR comments, ticket IDs, or wiki pages it came from, for the human reviewer)
 
-Example of what NOT to write: "In PR #847, the reviewer noted that the FX rate lookup was using the wrong date. This was because FX forwards settle on trade date, not the close of the previous business day. The fix was applied in src/nav/fx_pricing.py in commit abc123."
+Example of what NOT to write: "In PR #847, the reviewer noted that the stock reservation timeout was too long. This was because the 60-minute window causes overselling during flash sales. The fix was applied in src/inventory/reservation.py in commit abc123."
 
-Example of what TO write: "FX forwards use T-0 rates from [source], not T-1 close prices. All other asset classes use T-1. Scope: src/nav/fx_pricing.py."
+Example of what TO write: "Stock reservations expire after 30 minutes if payment is not captured. Never extend the window; it causes overselling during flash sales. Scope: src/inventory/reservation.py."
 
 ## Content categories checklist
 
@@ -275,11 +275,11 @@ Categories deliberately excluded: generic language style (enforced by linters), 
 
 Use progressive disclosure. The CLAUDE.md itself should be concise. Detailed reference material goes in separate files under a docs/claude/ directory that Claude reads on demand.
 
-Note on alternative placement: Claude Code automatically reads CLAUDE.md files from parent and child directories. For some repos, placing a CLAUDE.md inside a subdirectory (e.g. src/nav/CLAUDE.md) is simpler than the docs/claude/ approach because it auto-loads when working in that directory without needing a pointer from the root file. Use subdirectory CLAUDE.md files when the guidance is tightly scoped to one part of the repo. Use docs/claude/ reference files when the guidance applies across multiple directories or doesn't map cleanly to one location.
+Note on alternative placement: Claude Code automatically reads CLAUDE.md files from parent and child directories. For some repos, placing a CLAUDE.md inside a subdirectory (e.g. src/orders/CLAUDE.md) is simpler than the docs/claude/ approach because it auto-loads when working in that directory without needing a pointer from the root file. Use subdirectory CLAUDE.md files when the guidance is tightly scoped to one part of the repo. Use docs/claude/ reference files when the guidance applies across multiple directories or doesn't map cleanly to one location.
 
 ### Structural principles
 
-**How Claude Code processes this file.** The Claude Code harness wraps CLAUDE.md content with a system-level instruction telling the model that the context may or may not be relevant and should be ignored if not highly relevant to the current task. This means entries about FX rate lookups may be filtered out when Claude is editing a logging utility in the same repo. Two consequences: (1) the reference file approach matters because root file entries about a specific subdomain can get filtered during unrelated work; (2) pointers to reference files should be conditional, tied to file paths or code areas, so they appear relevant when Claude works in that area. Use "Before modifying X, read Y" rather than passive directory listings.
+**How Claude Code processes this file.** The Claude Code harness wraps CLAUDE.md content with a system-level instruction telling the model that the context may or may not be relevant and should be ignored if not highly relevant to the current task. This means entries about stock reservation rules may be filtered out when Claude is editing a logging utility in the same repo. Two consequences: (1) the reference file approach matters because root file entries about a specific subdomain can get filtered during unrelated work; (2) pointers to reference files should be conditional, tied to file paths or code areas, so they appear relevant when Claude works in that area. Use "Before modifying X, read Y" rather than passive directory listings.
 
 **One instruction per line, under 100 instructions total.** Research on instruction-following (IFScale, July 2025) found that frontier thinking models follow roughly 150-200 instructions with reasonable consistency. As instruction count increases, compliance degrades uniformly across all instructions. Claude Code's system prompt already contains approximately 50 instructions. This leaves a budget of roughly 100-150 for your CLAUDE.md. Each line should contain one instruction. Compound instructions ("Use Arrow-backed DataFrames, never set copy_on_write=False, and always use .loc for assignment") should be split into separate lines. Count your instructions, not just your lines.
 
@@ -287,9 +287,9 @@ Note on alternative placement: Claude Code automatically reads CLAUDE.md files f
 
 **Aim for the shortest file that covers your highest-stakes rules.** There is no magic line count. Anthropic says "concise" without specifying a number. HumanLayer keeps their root file under 60 lines. The real test: if a developer wouldn't read the whole file in one sitting, it's too long. Move detail into reference files. The root file should feel like a checklist, not a manual.
 
-**Brevity per entry matters more than overall structure.** Claude doesn't need persuading. Don't write "because historically we found that…" justifications running to three lines. Write: "FX forwards use T-0 rates, not T-1. All other asset classes use T-1." The "why" line should be one sentence at most, and only included when the rule would otherwise seem wrong or counterintuitive.
+**Brevity per entry matters more than overall structure.** Claude doesn't need persuading. Don't write "because historically we found that…" justifications running to three lines. Write: "Stock reservations expire after 30 minutes. Never extend the window; it causes overselling." The "why" line should be one sentence at most, and only included when the rule would otherwise seem wrong or counterintuitive.
 
-**Pointers over copies.** Do not embed code snippets in the root CLAUDE.md. They go stale with every commit and eat into the instruction budget. Instead, point Claude to the authoritative source in the codebase using file paths and named code elements: "See the `calculate_nav` method in src/nav/calculator.py." Do not use line numbers as anchors; they break on every edit. Function names, class names, and method names survive refactoring.
+**Pointers over copies.** Do not embed code snippets in the root CLAUDE.md. They go stale with every commit and eat into the instruction budget. Instead, point Claude to the authoritative source in the codebase using file paths and named code elements: "See the `process_order` method in src/orders/processor.py." Do not use line numbers as anchors; they break on every edit. Function names, class names, and method names survive refactoring.
 
 **CLAUDE.md is advisory; hooks are mandatory.** Claude Code hooks run deterministically at specific points in the workflow (pre-commit, post-edit, etc.). CLAUDE.md instructions are advisory and may be filtered or missed under instruction pressure. Rules that must always be enforced (run linter, run tests, format code) should be hooks. The CLAUDE.md should document that hooks exist, not duplicate their function. This also reduces the instruction count.
 
@@ -310,9 +310,9 @@ Last audited: [date]
 ## Domain rules
 
 [The highest-value section. Each rule is one instruction per line.
-These come primarily from your Jira/PR/commit cross-referencing in Step 3.
+These come primarily from your ticket/PR/commit cross-referencing in Step 3.
 Order by severity: rules where violation causes financial or data errors first.
-Point to code when helpful: "See `calculate_nav` in src/nav/calculator.py."]
+Point to code when helpful: "See `process_order` in src/orders/processor.py."]
 
 ## Build and test
 
@@ -351,7 +351,7 @@ Generate these only if the audit surfaces enough material to justify them. Don't
 
 **docs/claude/architecture.md**: Component relationships, data flow, key interfaces, project structure and key directories. Combine what /init detected with any architectural context from PR discussions. This is the "map" of the repo. Point to named code elements (classes, modules, entry points), not line numbers.
 
-**docs/claude/domain-glossary.md**: Business terms used in this repo and what they mean in code. Drawn from Jira tickets and PR comments where reviewers explained domain concepts. Format: "Term: definition. In code, this maps to [class/module/field]."
+**docs/claude/domain-glossary.md**: Business terms used in this repo and what they mean in code. Drawn from issue tracker tickets and PR comments where reviewers explained domain concepts. Format: "Term: definition. In code, this maps to [class/module/field]."
 
 **docs/claude/edge-cases.md**: Specific scenarios with expected behaviour. Drawn from bug tickets. Format: "When [situation], the correct behaviour is [X]. Do not [Y]. (Established in [JIRA-ID].)"
 
