@@ -25,15 +25,12 @@ I studied three categories of repos to inform this design.
 │   └── deep-init/
 │       └── SKILL.md
 │
-├── examples/
-│   ├── before.md
-│   └── after.md
-│
-└── docs/
-    └── designing-a-prompt-like-a-system.md
+└── examples/
+    ├── before.md
+    └── after.md
 ```
 
-Six content files plus three infrastructure files (README, LICENCE, .gitignore). One level of nesting for most content; two levels for the skill (required by the SKILL.md convention).
+Five content files plus three infrastructure files (README, LICENCE, .gitignore). One level of nesting for most content; two levels for the skill (required by the SKILL.md convention).
 
 The skill is named `deep-init` — a deliberate callback to Claude Code's `/init` command. `/init` reads the code; `/deep-init` reads the history. The name signals the relationship: run `/init` first, then `/deep-init` to go deeper.
 
@@ -53,10 +50,6 @@ If the repo later needs to support a matrix of source adapters (GitHub + Bitbuck
 
 *How a user interacts with it:* Read them on GitHub to decide whether the tool is worth trying. Reference them when explaining the approach to their team.
 
-**`docs/`** — The companion article and any future writing. The article ("Designing a prompt like you'd design a system") explains the design decisions behind the audit prompt: why the subagent architecture, why the two-phase execution, why the rule test, why progressive disclosure. It connects the tool to the broader "Trust, Not Capability" series.
-
-*How a user interacts with it:* Read it after using the tool, or when evaluating the approach. The README links to it for those who want the intellectual framework. It is not required for using the tool.
-
 **`CLAUDE.md`** — Instructions for developing this repo itself. Not the product; the development configuration. Covers style conventions for the writing and how to maintain the prompt specification. A quiet dogfooding: a repo about building better CLAUDE.md files should have a good one of its own.
 
 ### Where future content goes
@@ -69,7 +62,7 @@ The structure handles growth without reorganisation:
 | Separated subagent prompts (when adapters are needed) | `agents/github-pr-mining.md` (new directory) |
 | Hook scripts | `hooks/pre-commit.sh` (new directory) |
 | Starter CLAUDE.md template | `templates/starter-claudemd.md` (new directory) |
-| Second article | `docs/trust-not-capability-series.md` |
+| Companion article (if hosted in-repo) | `docs/designing-a-prompt-like-a-system.md` (new directory) |
 | Additional examples | `examples/python-monorepo.md` |
 
 Each addition is a new file in an existing directory, or a new directory at the root level with an obvious name. No existing files need to move.
@@ -78,7 +71,7 @@ Each addition is a new file in an existing directory, or a new directory at the 
 
 The `.claude/` directory is deliberately absent from the published structure.
 
-1. `.claude/` is the consumer's directory. When someone copies `skills/audit-repo/` into their repo, it goes into _their_ `.claude/skills/`. This repo publishes content; it does not consume it.
+1. `.claude/` is the consumer's directory. When someone copies `skills/deep-init/` into their repo, it goes into _their_ `.claude/skills/`. This repo publishes content; it does not consume it.
 
 2. If this repo needed its own Claude Code configuration (hooks, settings, permissions), those would go in `.claude/settings.json` and would be about developing the repo, not about the audit tool.
 
@@ -106,7 +99,7 @@ A side-by-side or sequential comparison: what `/init` produces vs what the audit
 
 ```
 1. Copy skills/deep-init/ into your repo's .claude/skills/ directory
-2. Run /audit-repo in Claude Code
+2. Run /deep-init in Claude Code
 3. Review the output before committing
 ```
 
@@ -140,7 +133,7 @@ Honest list:
 
 Two paragraphs connecting to the broader project. This repo is the concrete artifact of a five-part series on AI and software engineering practice. The series connects classical literature (Brooks, Conway, Deming, DORA) to frontier AI lab practices. The thesis: AI is a force multiplier only if systems are designed to absorb mistakes cheaply. CLAUDE.md is Deming's PDSA cycle in a markdown file.
 
-Link to the companion article in `docs/`. Link to the Substack series. Do not reproduce the argument — let the reader choose their depth.
+Link to the companion article and Substack series when published. Do not reproduce the argument — let the reader choose their depth.
 
 **8. Contributing**
 
@@ -203,15 +196,15 @@ The audit prompt stays as one file. The subagent instructions are inline section
 
 ### `skills/` at root vs inside `.claude/`
 
-Publishing repos keep content at the root level. `.claude/` is for consumption. This follows `anthropic/skills`. The trade-off: you cannot clone and immediately type `/audit-repo` to test. You must copy the skill into `.claude/` first. Clarity of purpose over instant dogfooding.
+Publishing repos keep content at the root level. `.claude/` is for consumption. This follows `anthropic/skills`. The trade-off: you cannot clone and immediately type `/deep-init` to test. You must copy the skill into `.claude/` first. Clarity of purpose over instant dogfooding.
 
 ### No `src/` directory
 
 The product is markdown, not code. No build step, no compilation, no packages. The content lives at the top level where it is immediately visible.
 
-### `docs/` rather than inlining the article in the README
+### Companion article lives externally
 
-The companion article is substantial. Embedding it in the README would make the README unwieldy. The README is a landing page; the article is a long-form argument. They serve different reading modes and should be separate files.
+The companion article publishes on Substack and the author's website first. The README links to it there. If a copy is later wanted in the repo, `docs/` appears at that point. No empty directory in the meantime.
 
 ### British English throughout
 
@@ -219,4 +212,4 @@ Deliberate stylistic choice. The LICENCE file uses the British spelling. All con
 
 ### No empty directories at launch
 
-Directories appear when there is content to put in them. `hooks/`, `templates/`, and `agents/` are documented as future expansion points but not created until needed.
+Directories appear when there is content to put in them. `docs/`, `hooks/`, `templates/`, and `agents/` are documented as future expansion points but not created until needed.

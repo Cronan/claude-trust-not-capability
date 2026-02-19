@@ -124,9 +124,7 @@ This repo is the concrete artifact of a broader project connecting classical sof
 
 The thesis: AI is a force multiplier only if systems are designed to absorb mistakes cheaply. CLAUDE.md is Deming's PDSA cycle in a markdown file. Every mistake the team catches becomes a rule. The audit command produces the initial rules; the `#` key maintains them over time.
 
-Companion article: [Designing a prompt like you'd design a system](docs/designing-a-prompt-like-a-system.md)
-
-<!-- TODO: Add Substack series link -->
+<!-- TODO: Add links to companion article and Substack series when published -->
 
 ## Contributing
 

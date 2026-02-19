@@ -16,8 +16,6 @@ The tone is "quiet authority": competent, clear, unpretentious. Write as if addr
 
 `examples/` contains sanitised before/after CLAUDE.md files. These must not contain real company data, team names, or proprietary domain rules.
 
-`docs/` contains the companion article and any future writing.
-
 ## Maintaining the audit prompt
 
 The SKILL.md is a single self-contained specification. Subagent instructions are inline sections, not separate files.
