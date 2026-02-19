@@ -14,8 +14,6 @@ The tone is "quiet authority": competent, clear, unpretentious. Write as if addr
 
 `skills/deep-init/SKILL.md` is the core product — the full audit specification. This file is both the readable specification and the Claude Code skill. Changes here affect what every user gets when they run `/deep-init`.
 
-`examples/` contains sanitised before/after CLAUDE.md files. These must not contain real company data, team names, or proprietary domain rules.
-
 Content is published at the repo root, not inside `.claude/`. The `.claude/` directory is the consumer's directory — when someone copies `skills/deep-init/` into their repo, it goes into their `.claude/skills/`. This repo publishes content; it does not consume it. This follows the same pattern as `anthropics/skills`.
 
 ## Where new content goes
@@ -27,7 +25,6 @@ Content is published at the repo root, not inside `.claude/`. The `.claude/` dir
 | Hook scripts | `hooks/pre-commit.sh` (new directory) |
 | Starter CLAUDE.md template | `templates/starter-claudemd.md` (new directory) |
 | Companion article (if hosted in-repo) | `docs/designing-a-prompt-like-a-system.md` (new directory) |
-| Additional examples | `examples/python-monorepo.md` |
 
 Each addition is a new file in an existing directory, or a new directory at the root level with an obvious name. No existing files need to move.
 

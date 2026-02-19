@@ -94,8 +94,6 @@ For business term definitions, see docs/claude/domain-glossary.md.
 
 </details>
 
-Full examples in [examples/](examples/).
-
 ### What the audit does
 
 The audit mines four sources in two phases:
