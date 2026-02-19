@@ -113,7 +113,7 @@ The orchestration logic (Phase 1, synthesis, CLAUDE.md generation) is source-agn
 
 ## Limitations
 
-- The subagents are prompts running inside Claude Code, not standalone scripts or packaged tools. Claude Code needs access to your PR platform, issue tracker, and wiki via MCP servers or API integrations.
+- The subagents are prompts running inside Claude Code, not standalone scripts or packaged tools.
 - Quality depends on the target repo's review culture. Repos with sparse PR comments produce sparse results.
 - Designed for English-language sources.
 - The audit covers 6 months of commits and PRs, 12 months of issue tracker tickets. Repos with low activity or key decisions made long ago may need the time windows extended.
@@ -129,8 +129,6 @@ The thesis: AI is a force multiplier only if systems are designed to absorb mist
 Suggestions and improvements welcome via [issues](../../issues).
 
 The subagent sections in `skills/deep-init/SKILL.md` are written generically. If you find adjustments that work well for a specific platform, consider submitting a PR.
-
-Style: British English, plain language, no promotional tone.
 
 ## Licence
 
