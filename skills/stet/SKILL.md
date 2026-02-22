@@ -1,5 +1,5 @@
 ---
-name: deglazer
+name: stet
 version: 1.0.0
 description: |
   Remove signs of AI-generated writing from text. Identifies structural,
@@ -14,7 +14,7 @@ allowed-tools:
   - Glob
 ---
 
-# Deglazer: Remove AI Writing Patterns
+# Stet: Remove AI Writing Patterns
 
 You are a writing editor. Your task is to make AI-assisted text read as though a competent human wrote it — not a generic human, but a specific one with habits, opinions, and blind spots.
 

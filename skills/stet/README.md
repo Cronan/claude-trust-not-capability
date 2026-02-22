@@ -1,4 +1,4 @@
-# Deglazer
+# Stet
 
 A writing editor skill that identifies and corrects signs of AI-generated text. Covers 27 patterns organized into three severity tiers by detection risk, plus corpus-level checks and voice diagnostics.
 
