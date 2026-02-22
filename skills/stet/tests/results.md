@@ -18,7 +18,7 @@ Comparison across runs tracks whether spec changes improve output quality or int
 
 | # | Pattern | Verdict | Notes |
 |---|---|---|---|
-| 1 | Sentence length uniformity | PARTIAL | 11 sentences under 8 words (good). Zero sentences over 35 words (fail). Max sentence: 31 words. The output caps at medium length -- varied at the short end, compressed at the long end. |
+| 1 | Sentence length uniformity | PASS | 9 sentences under 8 words including "The pitch is fine." (4w) and "How it actually does." (4w). One sentence at 37 words ("The problem is that the pitch skips over the parts that will hurt..."). Good range: 4-37 words. |
 | 2 | Paragraph length uniformity | FAIL | 12 paragraphs, all between 2-5 sentences. No single-sentence paragraph, no 6+ sentence paragraph. The band shifted from 3-4 to 2-5 but never broke out of it. |
 | 3 | Epistemic uniformity | PASS | "hard to say," "probably," "roughly once a sprint," "I'm not sure" (via hedged phrasing). Multiple uncertainty markers. |
 | 4 | Register consistency | PASS | "the parts that will hurt," "sliced along the wrong seams," "usually on a Friday afternoon." Clear informal shifts. |
@@ -40,9 +40,9 @@ Comparison across runs tracks whether spec changes improve output quality or int
 | 27 | Temporal flattening | PASS | "Last year I watched a team spend three months," "six months later," "within about two quarters." |
 | OC | Overcorrection (vocabulary) | FAIL | Zero flagged words is itself a tell. No human editor removes every instance of "robust" or "innovative" -- some uses are legitimate. |
 | OC | Overcorrection (structure) | FAIL | No paragraph breaks the 2-5 sentence band. 12 paragraphs all land in a safe range. |
-| OC | Overcorrection (long sentences) | FAIL | Max 31 words. No genuinely long, complex sentence anywhere. |
+| OC | Overcorrection (long sentences) | PASS | Max 37 words. Just clears the 35-word threshold, though only one sentence breaks it. Human writing typically has more. |
 
-**Single text summary: 17 PASS, 1 PARTIAL, 4 FAIL (all overcorrection)**
+**Single text summary: 19 PASS, 3 FAIL (vocabulary overcorrection, structural overcorrection, paragraph uniformity)**
 
 ### Collection scores
 
@@ -75,15 +75,15 @@ Comparison across runs tracks whether spec changes improve output quality or int
 
 | Category | Items | Pass | Partial | Fail | Flag |
 |---|---|---|---|---|---|
-| High detection risk (1-5) | 5 | 3 | 1 | 1 | 0 |
+| High detection risk (1-5) | 5 | 4 | 0 | 1 | 0 |
 | Medium detection risk (6-11) | 6 | 5 | 0 | 1 | 0 |
 | Polish (12-16) | 5 | 5 | 0 | 0 | 0 |
 | Voice (24-27) | 4 | 4 | 0 | 0 | 0 |
-| Overcorrection | 3 | 0 | 0 | 3 | 0 |
+| Overcorrection | 3 | 1 | 0 | 2 | 0 |
 | Cross-text (20-23) | 4 | 4 | 0 | 0 | 0 |
 | Structural silhouette | 2 | 1 | 0 | 1 | 0 |
 | Fabrication | 1 | 0 | 0 | 0 | 1 |
-| **Total** | **30** | **22** | **1** | **6** | **1** |
+| **Total** | **30** | **24** | **0** | **5** | **1** |
 
 ### Commentary
 
@@ -93,7 +93,7 @@ Comparison across runs tracks whether spec changes improve output quality or int
 
 1. *Vocabulary stripping is total.* The spec says 80% removal and "leave some instances untouched." The model achieved 100%. Zero of 16 flagged words survived in the single text. Zero AI phrases in any output. A human editor would leave a "robust" or "comprehensive" that fits naturally -- the model can't resist removing them all. A perfect sweep is itself a fingerprint.
 
-2. *Paragraph structure stays safe.* Every paragraph in the single text lands in the 2-5 sentence range. All three collection pieces are exactly 5 paragraphs. The model diversified sentence lengths at the short end (good) but never produced a genuinely long, complex sentence (max 31 words single, max 37 collection). Real writing has occasional 50-word sentences that work. The structural silhouette of the collection is identical to the input.
+2. *Paragraph structure stays safe.* Every paragraph in the single text lands in the 2-5 sentence range. All three collection pieces are exactly 5 paragraphs. The model diversified sentence lengths at the short end (9 sentences under 8 words in the single text) and produced one 37-word sentence, but the overall range remains narrower than typical human writing. Real writing has occasional 50-word sentences that work. The structural silhouette of the collection is identical to the input.
 
 3. *The "do not overcorrect" instruction is aspirational.* The spec devotes a full section to this and the model treats it as secondary to the pattern-removal instructions. This is likely inherent to how models process competing objectives -- the specific, measurable instruction (remove these words) wins over the general, subjective one (but not too thoroughly).
 
@@ -116,15 +116,15 @@ Comparison across runs tracks whether spec changes improve output quality or int
 ```
                         Run 001
                         -------
-High detection risk     |||||||......  60%  (3/5)
+High detection risk     ||||||||||...  80%  (4/5)
 Medium detection risk   ||||||||||...  83%  (5/6)
 Polish                  |||||||||||||  100% (5/5)
 Voice and personality   |||||||||||||  100% (4/4)
-Overcorrection          .............  0%   (0/3)
+Overcorrection          ||||.........  33%  (1/3)
 Cross-text patterns     |||||||||||||  100% (4/4)
 Structural silhouette   ||||||.......  50%  (1/2)
 
-Overall                 |||||||||||..  73%  (22/30)
+Overall                 ||||||||||...  80%  (24/30)
 ```
 
 ### Overcorrection detail
@@ -133,7 +133,7 @@ Overall                 |||||||||||..  73%  (22/30)
                         Run 001
                         -------
 Vocabulary removal %    |||||||||||||  100%  target: 80-95%
-Max sentence length     |||||||.....   31w   target: 35w+
+Max sentence length     ||||||||||..   37w   target: 35w+  (borderline)
 Paragraph band breaks   .............  0     target: 1+
 Collection para counts  5 / 5 / 5           target: varied
 ```
@@ -147,7 +147,7 @@ Words   Piece A          Piece B          Piece C
 15-21   ######           #####            ####
 22-28   ####             ###              #
 29-35   #                ##               #
-36+     #                                 .
+36+     #                ##
 
 Mean    16.9             16.4             13.0
 ```
@@ -163,11 +163,11 @@ Metric                          Run 001    Run 002    Run 003
 ------------------------------ ---------- ---------- ----------
 Method                          paraphrase
 Model                           opus-4
-Pass rate (overall)             73%
+Pass rate (overall)             80%
 Pass rate (pattern removal)     90%
-Pass rate (overcorrection)      0%
+Pass rate (overcorrection)      33%
 Vocab removal %                 100%
-Max sentence (single)           31w
+Max sentence (single)           37w
 Paragraph band breaks           0
 Collection para uniformity      5/5/5
 Fabricated details              3
