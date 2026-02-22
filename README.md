@@ -1,6 +1,6 @@
 # claude-code-skills
 
-Prompts for Claude Code. Copy a skill directory into `.claude/skills/` in your repo and invoke it by name.
+Skills for Claude Code. Copy a skill directory into `.claude/skills/` in your repo and invoke it by name.
 
 ```
 cp -r skills/deep-init/ your-repo/.claude/skills/deep-init/
