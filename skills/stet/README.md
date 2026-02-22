@@ -62,6 +62,26 @@ Organized by detection risk -- how likely they are to flag the text as AI-genera
 
 Each pattern includes diagnostics, before/after examples, and fix guidance. Full specification: [`SKILL.md`](SKILL.md).
 
+## Usage
+
+Requires [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Copy the skill into your repo:
+
+```
+cp -r skills/stet/ your-repo/.claude/skills/stet/
+```
+
+Then invoke it on any text file:
+
+```
+/stet article.md
+```
+
+Or on a collection:
+
+```
+/stet posts/piece-a.md posts/piece-b.md posts/piece-c.md
+```
+
 ## Research references
 
 The pattern list draws on published research:
@@ -69,9 +89,9 @@ The pattern list draws on published research:
 - [Linguistic Characteristics of AI-Generated Text: A Survey (arXiv, 2025)](https://arxiv.org/pdf/2510.05136) -- sentence length distributions, punctuation entropy, vocabulary frequency
 - [The Disappearing Author: Linguistic and Cognitive Markers (2025)](https://researchleap.com/the-disappearing-author-linguistic-and-cognitive-markers-of-ai-generated-communication/) -- epistemic uniformity, affective markers, cognitive markers
 - [Comparative linguistic analysis of human vs. machine-generated text (2025)](https://www.tandfonline.com/doi/full/10.1080/09540091.2025.2507183) -- structural regularity, stylistic consistency
-- Liang et al., "Monitoring AI-Modified Content at Scale" (2025) -- causal language distributions
-- Mitchell et al., DetectGPT follow-up work -- perplexity-based detection
-- Gehrmann et al., GLTR lineage -- token probability uniformity
+- [Monitoring AI-Modified Content at Scale -- Liang et al. (ICML, 2024)](https://arxiv.org/abs/2403.07183) -- vocabulary frequency shifts in LLM-modified text
+- [DetectGPT: Zero-Shot Machine-Generated Text Detection -- Mitchell et al. (ICML, 2023)](https://arxiv.org/abs/2301.11305) -- perplexity-based detection
+- [GLTR: Statistical Detection and Visualization of Generated Text -- Gehrmann et al. (ACL, 2019)](https://aclanthology.org/P19-3019/) -- token probability uniformity
 
 ## Word list derivation
 
