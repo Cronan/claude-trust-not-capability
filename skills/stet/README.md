@@ -2,13 +2,15 @@
 
 *Stet* is a proofreading mark from the Latin for "let it stand." An editor crosses something out, reconsiders, writes *stet* in the margin and dots the deletion -- the original stays.
 
-This skill does the inverse. AI has overwritten your voice with its patterns: uniform sentence lengths, the same three-paragraph cadence, "furthermore" and "leverage" and "comprehensive" on every page. `/stet` identifies 27 of these patterns and strips them, letting what you actually meant to say come through.
+This skill does the inverse. AI has overwritten your voice with its patterns: uniform sentence lengths, the same three-paragraph cadence, "furthermore" and "leverage" and "comprehensive" on every page. The writing is genuinely worse with these patterns in it -- not because it triggers detectors, but because it is monotonous, vague, and sounds like everyone else. `/stet` identifies 27 of these patterns and strips them, letting what you actually meant to say come through.
+
+This is not a humanizer. Humanizers rewrite text to evade classifiers. Stet edits text to make it better. The difference matters: a humanizer optimizes for the signal, stet fixes the underlying problem. If you are trying to pass off AI output as your own, this is the wrong tool. If you used AI to draft something and want it to actually sound like you wrote it, read on.
 
 ## The 27 patterns
 
-Organized by detection risk -- how likely they are to flag the text as AI-generated, whether by automated classifiers or attentive human readers.
+Organized by how much they degrade the writing -- from structural problems that make entire passages feel synthetic, down to surface noise that accumulates.
 
-**High detection risk** (structural tells that classifiers catch):
+**Structural patterns** (rhythm and shape -- what makes text feel monotonous):
 
 1. Sentence length uniformity -- every sentence is 15-25 words
 2. Paragraph length uniformity -- every paragraph is 3-5 sentences
@@ -16,7 +18,7 @@ Organized by detection risk -- how likely they are to flag the text as AI-genera
 4. Register consistency -- formality never shifts
 5. Punctuation distribution -- only commas, periods, and dashes
 
-**Medium detection risk** (patterns attentive readers catch):
+**Vocabulary and construction** (word choice and phrasing that sounds generic):
 
 6. Overused AI vocabulary -- furthermore, comprehensive, leverage, foster, delve, seamless, nuanced ...
 7. Copula avoidance -- "serves as" instead of "is"
@@ -61,6 +63,8 @@ Organized by detection risk -- how likely they are to flag the text as AI-genera
 > The team tried three deployment strategies. Blue-green won, mostly because rollbacks are instant -- you just flip the route back. Whether the added infrastructure complexity is worth it depends on how often you actually need to roll back, which in our case turned out to be roughly once a sprint, so yes.
 
 Each pattern includes diagnostics, before/after examples, and fix guidance. Full specification: [`SKILL.md`](SKILL.md).
+
+For the research behind the pattern list and why this approach differs from humanizer tools, see the [companion article](../../docs/ai-writing-patterns.md).
 
 ## Usage
 
