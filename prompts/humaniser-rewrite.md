@@ -298,3 +298,14 @@ Steps:
 - **Commit after each phase.** Each commit should be a self-contained improvement that passes the benchmark.
 - **When in doubt, cut.** A skill with 25 well-tested patterns is better than one with 37 that includes filler. Not every pattern from the current version needs to survive. If a pattern does not measurably improve detection resistance, drop it.
 - **Original examples are the hard part.** Invest time here. Write examples set in contexts you know: software engineering, team dynamics, product decisions, infrastructure. Do not use examples about cities, temples, galleries, or other Wikipedia-article subjects.
+
+## Research
+
+Use web search to read the academic papers listed in the "What you can use" section. Do not rely solely on training data for the research findings. Fetch the actual papers and extract specific data points, frequency counts, and pattern descriptions. Your word lists and diagnostics should cite specific findings from specific papers, not vague recollections.
+
+## Session discipline
+
+- **Read `CLAUDE.md` at the repo root before doing anything else.** It defines the writing conventions, tone, and structure for this repo. Everything you produce must conform to it.
+- **Do not read `skills/humaniser/SKILL.md` after Phase 0.** You read it once to understand the scope and to run the baseline. After that, close it. Work from the papers and your own analysis only. If you find yourself reproducing a specific phrase or example from the current skill, stop and write something different.
+- **If a phase fails the regression rule, fix it before moving on.** State what failed, what you think caused the regression, and what you changed. Do not silently adjust scores or skip the check.
+- **Commit and push after each phase.** Each commit message should name the phase and summarise what was added or changed.
