@@ -1,6 +1,6 @@
 # Trust, Not Capability
 
-This repo publishes a prompt system for auditing repository history and producing better CLAUDE.md files. The content is markdown, not code. There is no build step.
+This repo publishes prompts for Claude Code -- skills, agents, and supporting material. The content is markdown, not code. There is no build step.
 
 ## Writing conventions
 
@@ -12,9 +12,13 @@ The tone is "quiet authority": competent, clear, unpretentious. Write as if addr
 
 ## Structure
 
-`skills/deep-init/SKILL.md` is the core product — the full audit specification. This file is both the readable specification and the Claude Code skill. Changes here affect what every user gets when they run `/deep-init`.
+The repo is organized by content type. Currently only `skills/` exists; other directories (`agents/`, `hooks/`, `templates/`, `docs/`) appear when there is content for them.
 
-Content is published at the repo root, not inside `.claude/`. The `.claude/` directory is the consumer's directory — when someone copies `skills/deep-init/` into their repo, it goes into their `.claude/skills/`. This repo publishes content; it does not consume it. This follows the same pattern as `anthropics/skills`.
+The top-level `README.md` is the skills index. Each skill has its own README in its directory with the full description, examples, and references.
+
+`skills/deep-init/SKILL.md` is the core product -- the full audit specification. This file is both the readable specification and the Claude Code skill. Changes here affect what every user gets when they run `/deep-init`.
+
+Content is published at the repo root, not inside `.claude/`. The `.claude/` directory is the consumer's directory -- when someone copies `skills/deep-init/` into their repo, it goes into their `.claude/skills/`. This repo publishes content; it does not consume it. This follows the same pattern as `anthropics/skills`.
 
 ## Where new content goes
 

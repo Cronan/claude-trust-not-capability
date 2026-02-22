@@ -1,12 +1,86 @@
-# deep-init
+# /deep-init
 
-Audits a repository's git history, PR comments, issue tracker tickets, and team wiki pages to produce a CLAUDE.md grounded in the team's actual experience.
+Claude Code's `/init` produces a CLAUDE.md by reading the code. That captures build commands and project structure. It misses everything the team learned the hard way: domain rules from bug fixes, edge cases from ticket post-mortems, design decisions buried in PR reviews.
 
-## Why this exists
+`/deep-init` mines git history, PR comments, issue tracker tickets, and team wiki pages, then produces a CLAUDE.md grounded in what the team actually learned.
 
-Claude Code's `/init` produces a CLAUDE.md by reading the code. That captures build commands, project structure, and conventions visible in the source. It misses the team's accumulated knowledge: domain rules discovered through bug fixes, edge cases documented in ticket root cause analyses, and design decisions recorded in PR reviews.
+## Before and after
 
-This skill mines those sources and produces a CLAUDE.md that encodes what the team learned, not just what the code looks like.
+<details>
+<summary><strong>/init output</strong> (code-derived)</summary>
+
+```markdown
+# MyRepo
+
+## Build and test
+Run `pytest` to execute tests. Run `ruff check` for linting.
+
+## Project structure
+- src/orders/ -- Order processing modules
+- src/inventory/ -- Stock management and allocation
+
+## Coding conventions
+- Use type hints for all function signatures
+- Follow PEP 8 naming conventions
+```
+
+</details>
+
+<details>
+<summary><strong>After /deep-init</strong> (history-derived)</summary>
+
+```markdown
+# MyRepo
+Last audited: 2026-02-19
+
+Order processing and fulfillment engine. Errors here produce incorrect charges
+or oversold inventory.
+
+## Domain rules
+
+Stock reservations expire after 30 minutes if payment is not captured.
+Never extend the window; it causes overselling during flash sales.
+
+Never query the warehouse API during the nightly inventory sync (02:00-03:30 UTC).
+Use the cached snapshot from `InventoryCache.get_snapshot()`.
+
+Discount application runs after stock validation, not before.
+Applying discounts to out-of-stock items generates refund obligations
+for orders that should have been rejected.
+
+## Build and test
+
+`pytest` runs the full suite. No special flags needed.
+Pre-commit hooks enforce ruff and mypy -- do not skip them.
+
+## Coding patterns
+
+Use Arrow-backed DataFrames (`dtype_backend="pyarrow"`), not the default NumPy backend.
+See `load_orders` in src/data/loader.py for the canonical pattern.
+
+## References
+
+Before modifying anything in src/orders/, read docs/claude/domain-rules.md.
+For business term definitions, see docs/claude/domain-glossary.md.
+```
+
+</details>
+
+## How the audit works
+
+**Phase 1 -- Reconnaissance.** A git history subagent scans the log to identify hot files (files with recurring fix commits), revert commits, and ticket IDs.
+
+**Phase 2 -- Domain extraction.** Three subagents run in parallel, focused by Phase 1 output:
+
+- **PR comments**: domain rules from reviewer feedback on merged PRs
+- **Issue tracker**: root cause analysis and acceptance criteria from closed tickets
+- **Team wiki**: ADRs, glossaries, and runbooks
+
+**Synthesis.** Findings are cross-referenced by ticket ID, deduplicated, tested against a rule ("does this reveal something Claude cannot discover from the code?"), and written as concise instructions.
+
+Prerequisites: a repo with an existing CLAUDE.md from `/init`, and MCP server access to your PR platform, issue tracker, and wiki. The git subagent works with any git repository directly.
+
+Full specification: [`SKILL.md`](SKILL.md).
 
 ## Design rationale
 
