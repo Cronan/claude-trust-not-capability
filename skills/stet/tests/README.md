@@ -55,3 +55,7 @@ The skill is non-deterministic. Each run produces different edits. A passing res
 - Preserves the factual content and intent of each piece
 
 The rubric includes a prompt for evaluating output with a model if you prefer not to check manually.
+
+## Results
+
+Dated evaluation runs with scores, commentary, and comparison charts are in [`results.md`](results.md). Each run records the method (full invocation vs. paraphrased), model, per-pattern verdicts, and aggregate stats. Add new runs as you iterate on the spec or test against new models.
