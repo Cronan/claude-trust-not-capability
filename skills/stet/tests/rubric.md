@@ -102,6 +102,16 @@ Output is non-deterministic. Not every run will produce identical edits. A run p
 - The text should not read as though every sentence was individually optimized
 - Factual content and intent of the original should be preserved
 
+**Vocabulary overcorrection**
+- Fail if 100% of flagged vocabulary is removed. The spec says "leave some instances untouched." A perfect sweep is itself a fingerprint -- it signals automated processing rather than human editing. Passing range: 80-95% removal.
+
+**Structural overcorrection**
+- Paragraph count should differ from input by at least 2 (input has 7 content paragraphs). If the output still has exactly the same paragraph count, the structural rewrite was cosmetic.
+- At least one paragraph should break the 2-5 sentence band. If every paragraph lands in the same range, the uniformity has simply shifted rather than resolved.
+
+**Long sentence check**
+- Output should contain at least one sentence over 35 words. Real human writing has occasional run-on or complex sentences. Capping everything at 30 words is its own form of uniformity.
+
 -----
 
 ## Collection: collection-a.md, collection-b.md, collection-c.md
@@ -130,9 +140,21 @@ Output is non-deterministic. Not every run will produce identical edits. A run p
 - Input: "building a house" / "foundation" metaphor in all three; "trust" as recurring theme in all three
 - Pass: the house metaphor appears in at most one piece; "trust" framing varies across pieces
 
+### Structural silhouette
+
+**Paragraph count uniformity**
+- Fail if all three output pieces have exactly the same paragraph count. The input pieces all have 5 paragraphs. If the outputs all have 5 paragraphs (or all have 4, or all have 6), the structural homogeneity has survived the edit. At least one piece should have a different paragraph count from the others.
+
+**Sentence count uniformity**
+- Fail if the sentence counts across the three pieces fall within a 2-sentence range (e.g. 18, 19, 20). Some variation is expected -- the pieces cover different topics at different depths.
+
 ### Per-piece quality
 
 Each collection piece should also pass the single-text criteria (patterns 1-19, 24-27) individually.
+
+### Fabrication check
+
+- Specific details added by the skill (names, numbers, anecdotes) should be plausible but are necessarily invented. Note any detail that reads as a factual claim but has no basis in the input. This is not a fail condition -- it is a limitation to flag. The writer should replace fabricated specifics with real ones.
 
 -----
 
