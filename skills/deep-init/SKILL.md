@@ -279,13 +279,13 @@ Note on alternative placement: Claude Code automatically reads CLAUDE.md files f
 
 ### Structural principles
 
-**How Claude Code processes this file.** The Claude Code harness wraps CLAUDE.md content with a system-level instruction telling the model that the context may or may not be relevant and should be ignored if not highly relevant to the current task. This means entries about stock reservation rules may be filtered out when Claude is editing a logging utility in the same repo. Two consequences: (1) the reference file approach matters because root file entries about a specific subdomain can get filtered during unrelated work; (2) pointers to reference files should be conditional, tied to file paths or code areas, so they appear relevant when Claude works in that area. Use "Before modifying X, read Y" rather than passive directory listings.
+**Conditional pointers, not passive listings.** Root file entries about a specific subdomain can get filtered when Claude works on unrelated code. Tie pointers to reference files to file paths or code areas so they appear relevant in context. Use "Before modifying X, read Y" rather than passive directory listings.
 
-**One instruction per line, under 100 instructions total.** Research on instruction-following (IFScale, July 2025) found that frontier thinking models follow roughly 150-200 instructions with reasonable consistency. As instruction count increases, compliance degrades uniformly across all instructions. Claude Code's system prompt already contains approximately 50 instructions. This leaves a budget of roughly 100-150 for your CLAUDE.md. Each line should contain one instruction. Compound instructions ("Use Arrow-backed DataFrames, never set copy_on_write=False, and always use .loc for assignment") should be split into separate lines. Count your instructions, not just your lines.
+**One instruction per line, under 100 instructions total.** Claude Code's system prompt uses roughly 50 instructions. The remaining budget is 100-150 for the CLAUDE.md. Each line should contain one instruction. Compound instructions ("Use Arrow-backed DataFrames, never set copy_on_write=False, and always use .loc for assignment") should be split into separate lines. Count your instructions, not just your lines.
 
 **Domain rules first.** The model biases towards instructions at the beginning and end of the prompt. Domain rules are high-stakes and undiscoverable from the code. Build commands are low-stakes and often discoverable. Place domain rules immediately after the repo description.
 
-**Aim for the shortest file that covers your highest-stakes rules.** There is no magic line count. Anthropic says "concise" without specifying a number. HumanLayer keeps their root file under 60 lines. The real test: if a developer wouldn't read the whole file in one sitting, it's too long. Move detail into reference files. The root file should feel like a checklist, not a manual.
+**Aim for the shortest file that covers your highest-stakes rules.** If a developer wouldn't read the whole file in one sitting, it's too long. Move detail into reference files. The root file should feel like a checklist, not a manual.
 
 **Brevity per entry matters more than overall structure.** Claude doesn't need persuading. Don't write "because historically we found that…" justifications running to three lines. Write: "Stock reservations expire after 30 minutes. Never extend the window; it causes overselling." The "why" line should be one sentence at most, and only included when the rule would otherwise seem wrong or counterintuitive.
 
@@ -295,7 +295,7 @@ Note on alternative placement: Claude Code automatically reads CLAUDE.md files f
 
 **Headers are for human maintenance, not for Claude.** Claude doesn't need `## Domain rules` to know it's reading domain rules. The headers help developers scan and maintain the file, and help when Claude cites its reasoning in PR comments. Keep them short and consistent.
 
-**The # key is the maintenance mechanism for every section.** The audit command produces the initial file. The # key is how it stays alive. When a PR review catches an error, whether in domain rules, coding patterns, or edge cases, the correction goes into the relevant section via # before the PR merges. This is Deming's PDSA cycle encoded in a markdown file: every mistake becomes a rule. Treat this as a structural principle, not a feature of one section.
+**The # key is the maintenance mechanism for every section.** The audit produces the initial file. The # key is how it stays alive. When a PR review catches an error, the correction goes into the relevant section via # before the PR merges. Every mistake becomes a rule. Treat this as a structural principle, not a feature of one section.
 
 **Include a version note.** Add a last-audited date at the top so developers know whether to trust the file or re-run the audit.
 

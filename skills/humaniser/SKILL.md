@@ -527,18 +527,3 @@ Provide:
 1. A brief note on which patterns were most prominent (optional, if helpful)
 1. For collections: cross-text issues found
 
------
-
-# REFERENCES
-
-This skill draws on:
-
-- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), maintained by WikiProject AI Cleanup
-- [Linguistic Characteristics of AI-Generated Text: A Survey (arXiv, 2025)](https://arxiv.org/pdf/2510.05136)
-- [The Disappearing Author: Linguistic and Cognitive Markers (2025)](https://researchleap.com/the-disappearing-author-linguistic-and-cognitive-markers-of-ai-generated-communication/)
-- [Comparative linguistic analysis of human vs. machine-generated text (2025)](https://www.tandfonline.com/doi/full/10.1080/09540091.2025.2507183)
-- Liang et al., "Monitoring AI-Modified Content at Scale" (2025) - distributional and causal language patterns
-- Mitchell et al., DetectGPT follow-up work on perplexity-based detection
-- Gehrmann et al., GLTR lineage on uniform token probability
-
-Key insight: as reasoning models improve, surface vocabulary tells fade, but structural patterns (uniform sentence length, epistemic flatness, register lock) and corpus-level patterns (cross-text repetition, structural homogeneity) persist. The strongest tells are now about texture, not vocabulary.

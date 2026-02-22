@@ -1,0 +1,11 @@
+This repository contains material derived from the following sources.
+
+## skills/humaniser/
+
+The humaniser skill builds on humanizer by Siqi Chen
+(https://github.com/blader/humanizer), used under the MIT licence.
+
+Several examples and word lists are derived from Wikipedia: Signs of AI
+writing (https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing),
+which is licensed under CC BY-SA 4.0
+(https://creativecommons.org/licenses/by-sa/4.0/).
