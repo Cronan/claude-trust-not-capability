@@ -63,11 +63,15 @@ Comparison across runs tracks whether spec changes improve output quality or int
 | Word count | 304 | 328 | 313 |
 | Paragraphs | 5 | 5 | 5 |
 | Sentences | 18 | 20 | 24 |
+| Para shape (sentences) | 4-4-4-3-3 | 3-4-5-6-2 | 2-4-6-8-4 |
+| 6+ sentence paragraphs | 0 | 1 | 2 |
 | Sentence range (words) | 6-36 | 4-37 | 1-35 |
 | Sentences under 8 words | 2 | 5 | 10 |
 | Sentences over 35 words | 1 | 2 | 0 |
 | AI vocab surviving | 0 | 0 | 0 |
 | AI phrases surviving | 0 | 0 | 0 |
+
+Note: paragraph count is uniform (5-5-5) but internal paragraph shapes differ substantially. Piece A is flat (3-4 sentences each). Piece B ramps to a 6-sentence anecdote paragraph then drops to a 2-sentence close. Piece C escalates dramatically to an 8-sentence staccato-imperative paragraph. The silhouette failure is real but shallower than the raw count suggests.
 
 **Collection summary: 5 PASS, 1 FAIL (paragraph uniformity), 1 FLAG (fabrication)**
 
