@@ -1,17 +1,77 @@
-# Stet
+# /stet
 
-A writing editor skill that identifies and corrects signs of AI-generated text. Covers 27 patterns organized into three severity tiers by detection risk, plus corpus-level checks and voice diagnostics.
+*Stet* is a proofreading mark from the Latin for "let it stand." An editor crosses something out, reconsiders, writes *stet* in the margin and dots the deletion -- the original stays.
+
+This skill does the inverse. AI has overwritten your voice with its patterns: uniform sentence lengths, the same three-paragraph cadence, "furthermore" and "leverage" and "comprehensive" on every page. `/stet` identifies 27 of these patterns and strips them, letting what you actually meant to say come through.
+
+## The 27 patterns
+
+Organized by detection risk -- how likely they are to flag the text as AI-generated, whether by automated classifiers or attentive human readers.
+
+**High detection risk** (structural tells that classifiers catch):
+
+1. Sentence length uniformity -- every sentence is 15-25 words
+2. Paragraph length uniformity -- every paragraph is 3-5 sentences
+3. Epistemic uniformity -- equal confidence in every claim
+4. Register consistency -- formality never shifts
+5. Punctuation distribution -- only commas, periods, and dashes
+
+**Medium detection risk** (patterns attentive readers catch):
+
+6. Overused AI vocabulary -- furthermore, comprehensive, leverage, foster, delve, seamless, nuanced ...
+7. Copula avoidance -- "serves as" instead of "is"
+8. Significance inflation -- everything is pivotal, crucial, transformative
+9. Superficial participle phrases -- "highlighting the importance of"
+10. Causal over-assertion -- clean because/therefore chains where reality is messy
+11. Vague attributions -- "industry experts suggest"
+
+**Polish** (individually minor, collectively diagnostic):
+
+12. Promotional language -- groundbreaking, revolutionary, game-changing
+13. Formulaic section headers -- "Why this matters," "Looking ahead"
+14. Weak transitions -- Furthermore, Moreover, In addition
+15. Bureaucratic bloat -- "in order to," "due to the fact that"
+16. Intensifiers -- very, really, extremely, incredibly
+17. Formatting tells -- em dash overuse, excessive boldface
+18. Communication artifacts -- "I hope this helps," "Let me know if"
+19. Hedging and sycophancy -- "Great question!", "The possibilities are endless"
+
+**Corpus-level** (visible only when comparing multiple texts by the same "author"):
+
+20. Cross-text verbatim repetition
+21. Structural homogeneity
+22. Convergent framing devices
+23. Motif overuse
+
+**Voice and personality** (what to add, not just what to remove):
+
+24. Emotional flatness -- no reaction to the material
+25. Opinion absence -- every side presented with equal weight
+26. Absence of specific detail -- "a large-scale system" vs. the actual system
+27. Temporal flattening -- everything in vague present tense
+
+## Before and after
+
+**Before:**
+
+> The team evaluated several deployment strategies before selecting blue-green deployments. This approach allows seamless switching between production environments. The rollback process becomes significantly simpler with this architecture. Teams can verify new releases against production traffic before committing fully.
+
+**After:**
+
+> The team tried three deployment strategies. Blue-green won, mostly because rollbacks are instant -- you just flip the route back. Whether the added infrastructure complexity is worth it depends on how often you actually need to roll back, which in our case turned out to be roughly once a sprint, so yes.
+
+Each pattern includes diagnostics, before/after examples, and fix guidance. Full specification: [`SKILL.md`](SKILL.md).
 
 ## Research references
 
-The following academic papers informed the pattern descriptions and diagnostics:
+The pattern list draws on published research:
 
-- [Linguistic Characteristics of AI-Generated Text: A Survey (arXiv, 2025)](https://arxiv.org/pdf/2510.05136) — sentence length distributions, punctuation entropy, vocabulary frequency
-- [The Disappearing Author: Linguistic and Cognitive Markers (2025)](https://researchleap.com/the-disappearing-author-linguistic-and-cognitive-markers-of-ai-generated-communication/) — epistemic uniformity, affective markers, cognitive markers
-- [Comparative linguistic analysis of human vs. machine-generated text (2025)](https://www.tandfonline.com/doi/full/10.1080/09540091.2025.2507183) — structural regularity, stylistic consistency
-- Liang et al., "Monitoring AI-Modified Content at Scale" (2025) — causal language distributions
-- Mitchell et al., DetectGPT follow-up work — perplexity-based detection
-- Gehrmann et al., GLTR lineage — token probability uniformity
+- [Linguistic Characteristics of AI-Generated Text: A Survey (arXiv, 2025)](https://arxiv.org/pdf/2510.05136) -- sentence length distributions, punctuation entropy, vocabulary frequency
+- [The Disappearing Author: Linguistic and Cognitive Markers (2025)](https://researchleap.com/the-disappearing-author-linguistic-and-cognitive-markers-of-ai-generated-communication/) -- epistemic uniformity, affective markers, cognitive markers
+- [Comparative linguistic analysis of human vs. machine-generated text (2025)](https://www.tandfonline.com/doi/full/10.1080/09540091.2025.2507183) -- structural regularity, stylistic consistency
+- Liang et al., "Monitoring AI-Modified Content at Scale" (2025) -- causal language distributions
+- Mitchell et al., DetectGPT follow-up work -- perplexity-based detection
+- Gehrmann et al., GLTR lineage -- token probability uniformity
 
 ## Word list derivation
 
