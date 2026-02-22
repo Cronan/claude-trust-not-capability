@@ -1,4 +1,4 @@
-# claude-code-skills
+# claude-code-prompts
 
 Skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Each skill is a self-contained specification that Claude Code follows when you invoke it by name. Copy a skill directory into `.claude/skills/` in your repo.
 
