@@ -1,8 +1,8 @@
-# Rewrite the humaniser skill from scratch
+# Rewrite the deglazer skill from scratch
 
 ## Context
 
-You are working in the repo `claude-trust-not-capability`. It publishes Claude Code skills as prompt specifications. One skill, `/humaniser` at `skills/humaniser/SKILL.md`, removes signs of AI-generated writing from text.
+You are working in the repo `claude-trust-not-capability`. It publishes Claude Code skills as prompt specifications. One skill, `/deglazer` at `skills/deglazer/SKILL.md`, removes signs of AI-generated writing from text.
 
 The current version has IP problems. It derives content (specific examples, word lists, editorial framing) from two sources without adequate separation:
 
@@ -42,13 +42,13 @@ Read `CLAUDE.md` at the repo root before starting. Observe:
 - British English throughout
 - No emojis
 - Tone: quiet authority — competent, clear, unpretentious
-- The SKILL.md is both a readable specification and a Claude Code skill prompt. Everything in it must be something Claude needs during execution. Design rationale, research citations, and provenance go in `skills/humaniser/README.md`, not in the skill itself.
+- The SKILL.md is both a readable specification and a Claude Code skill prompt. Everything in it must be something Claude needs during execution. Design rationale, research citations, and provenance go in `skills/deglazer/README.md`, not in the skill itself.
 
 The skill frontmatter must include:
 
 ```yaml
 ---
-name: humaniser
+name: deglazer
 version: 5.0.0
 description: |
   [your description]
@@ -73,7 +73,7 @@ Before writing any skill content, build a benchmark corpus. This corpus is the g
 
 ### Building the corpus
 
-Create a file `tests/humaniser/corpus.md`. Generate 10 text samples by prompting an LLM (use yourself — ask Claude to write these as if it were producing final-draft content, not chatbot responses). Each sample should be 150-300 words.
+Create a file `tests/deglazer/corpus.md`. Generate 10 text samples by prompting an LLM (use yourself — ask Claude to write these as if it were producing final-draft content, not chatbot responses). Each sample should be 150-300 words.
 
 Cover these domains and styles:
 
@@ -98,11 +98,11 @@ After each phase, run the current state of the skill against all 10 samples. For
 - **Voice**: Does this sound like a specific person wrote it, or is it voiceless? (1 = sterile, 5 = distinctive)
 - **Meaning preservation**: Is the original meaning intact? (1 = meaning distorted, 5 = fully preserved)
 
-Record scores in `tests/humaniser/scores.md` as a table. Each phase adds a row per sample.
+Record scores in `tests/deglazer/scores.md` as a table. Each phase adds a row per sample.
 
 ### Baseline
 
-Run the existing skill (`skills/humaniser/SKILL.md` at its current state) against all 10 samples before making any changes. Record baseline scores. This is the bar to clear.
+Run the existing skill (`skills/deglazer/SKILL.md` at its current state) against all 10 samples before making any changes. Record baseline scores. This is the bar to clear.
 
 ### Regression rule
 
@@ -125,10 +125,10 @@ If a phase fails the regression test, revise it before moving on. Do not proceed
 
 Steps:
 
-1. Read the current `skills/humaniser/SKILL.md` to understand what exists
-2. Create `tests/humaniser/corpus.md` with 10 samples as specified above
-3. Run the current skill against all 10 samples. Record baseline scores in `tests/humaniser/scores.md`
-4. Create a new `skills/humaniser/SKILL.md` containing only the frontmatter, the title, the opening instruction ("You are a writing editor..."), and the overcorrect warning. No patterns yet
+1. Read the current `skills/deglazer/SKILL.md` to understand what exists
+2. Create `tests/deglazer/corpus.md` with 10 samples as specified above
+3. Run the current skill against all 10 samples. Record baseline scores in `tests/deglazer/scores.md`
+4. Create a new `skills/deglazer/SKILL.md` containing only the frontmatter, the title, the opening instruction ("You are a writing editor..."), and the overcorrect warning. No patterns yet
 5. Run this skeleton skill against all 10 samples. Record scores. This is the "empty skill" baseline — it shows what Claude does with minimal instruction. The gap between this and the full baseline tells you how much the patterns actually contribute
 
 **IP check:** The overcorrect warning must be originally worded. The concept (uniform application of humanisation is itself a tell) is not copyrightable. The specific bullet points and phrasing must be yours.
@@ -161,7 +161,7 @@ Steps:
 4. Compare to Phase 0 scores. Apply the regression rule
 5. If any pattern made things worse (e.g., by encouraging overcorrection), revise it
 
-**IP check:** For each pattern, note in `tests/humaniser/ip-log.md` where the observation came from (which paper, or "primary analysis of LLM output"). Confirm no examples or phrasing are from Wikipedia or blader.
+**IP check:** For each pattern, note in `tests/deglazer/ip-log.md` where the observation came from (which paper, or "primary analysis of LLM output"). Confirm no examples or phrasing are from Wikipedia or blader.
 
 ### Phase 2: Vocabulary and surface patterns
 
@@ -176,11 +176,11 @@ Patterns to cover:
 - Causal over-assertion
 - Vague attributions
 
-For the vocabulary list: generate 20+ passages from different LLMs on different topics. Count which words appear disproportionately often. Build your list from that primary data. Document the method in `tests/humaniser/ip-log.md`.
+For the vocabulary list: generate 20+ passages from different LLMs on different topics. Count which words appear disproportionately often. Build your list from that primary data. Document the method in `tests/deglazer/ip-log.md`.
 
 Steps:
 
-1. Conduct the vocabulary frequency analysis. Record method and raw data in `tests/humaniser/vocabulary-analysis.md`
+1. Conduct the vocabulary frequency analysis. Record method and raw data in `tests/deglazer/vocabulary-analysis.md`
 2. Write each pattern with original examples
 3. Add to the skill under a "Medium detection risk" section
 4. Run against all 10 samples. Record scores
@@ -276,15 +276,15 @@ Steps:
 **IP check — final audit:**
 
 1. Read the entire skill and confirm that no example text, word list, or diagnostic question is recognisably from the Wikipedia page or blader's skill
-2. For each word list, confirm the derivation is logged in `tests/humaniser/ip-log.md`
+2. For each word list, confirm the derivation is logged in `tests/deglazer/ip-log.md`
 3. Check that no before/after pair uses a real Wikipedia article as its subject matter
-4. Write a summary in `tests/humaniser/ip-log.md` stating: sources consulted, method of derivation for each original element, confirmation that no CC BY-SA content was carried over
+4. Write a summary in `tests/deglazer/ip-log.md` stating: sources consulted, method of derivation for each original element, confirmation that no CC BY-SA content was carried over
 
 ### Phase 7: Documentation
 
 **Objective:** Update the README and NOTICE file.
 
-1. Update `skills/humaniser/README.md` to reflect the new version. The provenance section should state that this is an independent rewrite, note the academic papers consulted, and describe the derivation method for word lists
+1. Update `skills/deglazer/README.md` to reflect the new version. The provenance section should state that this is an independent rewrite, note the academic papers consulted, and describe the derivation method for word lists
 2. Update the `NOTICE` file at the repo root. The blader/humanizer attribution should be replaced with a note that v5.0.0 is an independent rewrite that does not derive from that work. The Wikipedia attribution can be removed if no CC BY-SA content remains
 3. Update the version in the SKILL.md frontmatter to 5.0.0
 
@@ -306,6 +306,6 @@ Use web search to read the academic papers listed in the "What you can use" sect
 ## Session discipline
 
 - **Read `CLAUDE.md` at the repo root before doing anything else.** It defines the writing conventions, tone, and structure for this repo. Everything you produce must conform to it.
-- **Do not read `skills/humaniser/SKILL.md` after Phase 0.** You read it once to understand the scope and to run the baseline. After that, close it. Work from the papers and your own analysis only. If you find yourself reproducing a specific phrase or example from the current skill, stop and write something different.
+- **Do not read `skills/deglazer/SKILL.md` after Phase 0.** You read it once to understand the scope and to run the baseline. After that, close it. Work from the papers and your own analysis only. If you find yourself reproducing a specific phrase or example from the current skill, stop and write something different.
 - **If a phase fails the regression rule, fix it before moving on.** State what failed, what you think caused the regression, and what you changed. Do not silently adjust scores or skip the check.
 - **Commit and push after each phase.** Each commit message should name the phase and summarise what was added or changed.

@@ -1,4 +1,4 @@
-# Humaniser
+# Deglazer
 
 A writing editor skill that identifies and corrects signs of AI-generated text. Covers 37 patterns organised into three severity tiers by detection risk, plus voice and personality diagnostics.
 

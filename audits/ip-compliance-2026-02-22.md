@@ -17,17 +17,17 @@ The illustrative examples (stock reservations, warehouse API, discount applicati
 
 No IP concerns.
 
-## `/humaniser` — SIGNIFICANT RISK
+## `/deglazer` — SIGNIFICANT RISK
 
 Two separate problems identified.
 
 ### Problem 1: Unattributed derivation from blader/humanizer
 
-A repository called [blader/humanizer](https://github.com/blader/humanizer) by Siqi Chen (approximately 5,900 stars) was published on 18 January 2026. This repository's humaniser was added on 19 February 2026, one month later.
+A repository called [blader/humanizer](https://github.com/blader/humanizer) by Siqi Chen (approximately 5,900 stars) was published on 18 January 2026. This repository's deglazer skill (originally named humaniser) was added on 19 February 2026, one month later.
 
 The overlap is substantial and specific:
 
-| Content | blader/humanizer (v2.2.0) | This repo's humaniser (v4.0.0) |
+| Content | blader/humanizer (v2.2.0) | This repo's deglazer (v4.0.0) |
 |---|---|---|
 | Gallery 825 example | Present, same wording | Present, same wording |
 | Catalonia statistics example | Present, same wording | Present, same wording |
@@ -49,10 +49,10 @@ Both this repository and blader's repository derive content from [Wikipedia: Sig
 
 All Wikipedia content is licensed under CC BY-SA 4.0. This licence requires:
 
-1. **Attribution** — the humaniser does credit Wikipedia (satisfied)
+1. **Attribution** — the deglazer skill does credit Wikipedia (satisfied)
 2. **Share-alike** — derivative works must be released under CC BY-SA or a compatible licence
 
-This repository uses MIT. MIT is not compatible with CC BY-SA's share-alike requirement. If the humaniser is a derivative work of the Wikipedia page (and the shared examples and word lists make a strong case that it is), the MIT licence is insufficient.
+This repository uses MIT. MIT is not compatible with CC BY-SA's share-alike requirement. If the deglazer skill is a derivative work of the Wikipedia page (and the shared examples and word lists make a strong case that it is), the MIT licence is insufficient.
 
 This applies to blader's repository too, but that does not reduce the risk for this repository.
 
@@ -60,11 +60,11 @@ This applies to blader's repository too, but that does not reduce the risk for t
 
 **For `/deep-init`**: Safe to offer at work. No changes needed.
 
-**For `/humaniser`**: Do not offer at work in its current form. Options:
+**For `/deglazer`**: Do not offer at work in its current form. Options:
 
 1. **Relicense under CC BY-SA 4.0** and add proper attribution to both the Wikipedia page and blader/humanizer. This satisfies both obligations but changes what others can do with the repository.
 2. **Rewrite from scratch** using only the academic papers as sources (not Wikipedia, not blader's repository). The underlying research findings are not copyrightable — they are factual observations. But the specific word lists, examples, and editorial framing would need to be replaced entirely.
-3. **Remove the humaniser skill** from the repository before offering it at work, and offer only `/deep-init`.
+3. **Remove the deglazer skill** from the repository before offering it at work, and offer only `/deep-init`.
 
 ## Limitations of this audit
 

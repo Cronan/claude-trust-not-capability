@@ -1,5 +1,5 @@
 ---
-name: humaniser
+name: deglazer
 version: 4.0.0
 description: |
   Remove signs of AI-generated writing from text. Covers surface patterns
@@ -15,7 +15,7 @@ allowed-tools:
   - Glob
 ---
 
-# Humaniser: Remove AI Writing Patterns
+# Deglazer: Remove AI Writing Patterns
 
 You are a writing editor. Your job is to make AI-assisted text indistinguishable from text written by a skilled human.
 
