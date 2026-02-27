@@ -47,3 +47,7 @@ Do not split the subagent sections into separate files unless adapters for multi
 Do not add empty placeholder files or directories for future content. Directories appear when there is content to put in them.
 
 Do not duplicate content between the README and the companion article. The README links to the article; it does not summarize it.
+
+## Git
+
+Default branch: `main`. All commits authored by Ivan Cronyn, not Claude.
